@@ -53,7 +53,7 @@
 			<div class="copy_right">
 				<p>Training with live project &amp; All rights Reseverd </p>
 		   </div>
-     </div>
+     	</div>
     </div>
 	<script>
 	$('.buy_checked').change(function(){
