@@ -1,96 +1,77 @@
-﻿<?php include 'inc/header.php';?>
-<?php include 'inc/sidebar.php';?>
+﻿<?php include 'inc/header.php'; ?>
+<?php include 'inc/sidebar.php'; ?>
+<?php include '../classes/Order.php'; ?>
 <?php
-$filepath = realpath(dirname(__FILE__));
-include_once ($filepath.'/../classes/cart.php');
-include_once ($filepath.'/../helpers/format.php');
+$order = new Order();
+$message = '';
+if (isset($_GET['delId'])) {
+	$id = $_GET['delId'];
+	$delOrder = $order->delete_order($id);
+	$message = $delOrder['message'];
+} elseif (isset($_GET['status']) && isset($_GET['orderId'])) {
+	$id = $_GET['orderId'];
+	$status = $_GET['status'];
+	$updateOrder = $order->update_status($id, $status);
+	$message = $updateOrder['message'];
+}
 ?>
-<?php 
-	$ct = new Cart();
-	if(isset($_GET['shiftid'])){
-		$id = $_GET['shiftid'];
-		$shifted = $ct->shifted($id);
-		if($shifted){
-			echo "<script>window.location='inbox.php';</script>";
-		}
-	}
-	if(isset($_GET['delid'])){
-		$id = $_GET['delid'];
-		$delShifted = $ct->delShifted($id);
-		if($delShifted){
-            echo "<script>window.location='inbox.php';</script>";
-        }
-	}
-?>
-        <div class="grid_10">
-            <div class="box round first grid">
-                <h2>Đơn hàng đã đặt</h2>
-                <div class="block">
-					<?php
-					if(isset($shifted)){
-						echo $shifted;
-					}
-					if(isset($delShifted)){
-						echo $delShifted;
-					}
-					?>        
-                    <table class="data display datatable" id="example">
-					<thead>
+<div class="content">
+	<div class="box">
+		<h2>Danh sách đơn hàng</h2>
+		<?php if ($message): ?>
+			<div class="alert <?php echo strpos($message, 'thành công') !== false ? 'alert-success' : 'alert-error'; ?>">
+				<?php echo $message; ?>
+			</div>
+		<?php endif; ?>
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th>STT</th>
+					<th>Mã đơn hàng</th>
+					<th>Khách hàng</th>
+					<th>Tổng tiền</th>
+					<th>Ngày đặt</th>
+					<th>Trạng thái</th>
+					<th>Hành động</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				$orderlist = $order->show_orders();
+				if ($orderlist) {
+					$i = 0;
+					while ($result = $orderlist->fetch_assoc()) {
+						$i++;
+				?>
 						<tr>
-							<th>No.</th>
-							<th>Order Time</th>
-							<th>Order Code</th>
-							<th>Customer Name</th>
-							<th>Action</th>
-							<th>Status</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php
-						$ct = new Cart();
-						$fm = new Format();
-						$get_inbox_cart = $ct->get_inbox_cart();
-						if($get_inbox_cart){
-							$i = 0;
-                            while($result = $get_inbox_cart->fetch_assoc()){
-                                $i++;
-						?>
-						<tr class="odd gradeX">
-							<td><?php echo $i;?></td>
-							<td><?php echo $fm->formatDate($result['date_created'])?></td>
-							<td><?php echo $result['order_code']?></td>
-							<td><?php echo $result['name']?></td>
-							<td><a href="customer.php?customerid=<?php echo $result['customer_id']?>&order_code=<?php echo $result['order_code']?>">View Order</a></td>
+							<td><?php echo $i; ?></td>
+							<td><?php echo $result['order_code']; ?></td>
+							<td><?php echo $result['name']; ?></td>
+							<td><?php echo number_format($result['total'], 0, ',', '.') . ' VND'; ?></td>
+							<td><?php echo $result['created_at']; ?></td>
 							<td>
 								<?php
-									if($result['status'] == 0){
-									?>
-									<a href="?shiftid=<?php echo $result['order_code']?>">Tình trạng mới</a>
-								<?php
-									} elseif($result['status'] == 1){
-										echo 'Đang vận chuyển...';
-                                    ?>
-								<?php
-									} elseif($result['status'] == 2) {
-									?>
-									<a href="?delid=<?php echo $result['order_code']?>">Đã nhận | Xóa</a>
-									<?php
-									}
+								if ($result['status'] == 0) echo 'Mới';
+								elseif ($result['status'] == 1) echo 'Đang vận chuyển';
+								else echo 'Đã nhận';
 								?>
 							</td>
+							<td>
+								<a href="orderdetails.php?orderId=<?php echo $result['order_id']; ?>" class="btn btn-edit"><i class="fas fa-eye"></i> Xem</a>
+								<?php if ($result['status'] == 0): ?>
+									<a href="?orderId=<?php echo $result['order_id']; ?>&status=1" class="btn">Xác nhận</a>
+								<?php elseif ($result['status'] == 1): ?>
+									<a href="?orderId=<?php echo $result['order_id']; ?>&status=2" class="btn">Hoàn thành</a>
+								<?php endif; ?>
+								<a href="?delId=<?php echo $result['order_id']; ?>" class="btn btn-delete"><i class="fas fa-trash"></i> Xóa</a>
+							</td>
 						</tr>
-						<?php }}?>
-					</tbody>
-				</table>
-               </div>
-            </div>
-        </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        setupLeftMenu();
-
-        $('.datatable').dataTable();
-        setSidebarHeight();
-    });
-</script>
-<?php include 'inc/footer.php';?>
+				<?php
+					}
+				}
+				?>
+			</tbody>
+		</table>
+	</div>
+</div>
+<?php include 'inc/footer.php'; ?>

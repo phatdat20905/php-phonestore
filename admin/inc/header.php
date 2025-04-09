@@ -2,88 +2,55 @@
 include '../lib/session.php';
 Session::checkSession();
 ?>
-<?php
-header("Cache-Control: no-cache, must-revalidate");
-header("Pragma: no-cache");
-header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
-header("Cache-Control: max-age=2592000");
-?>
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>Admin</title>
-    <link rel="stylesheet" type="text/css" href="css/reset.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="css/text.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="css/grid.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="css/layout.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="css/nav.css" media="screen" />
-    <link href="css/table/demo_page.css" rel="stylesheet" type="text/css" />
-    <!-- BEGIN: load jquery -->
-    <script src="js/jquery-1.6.4.min.js" type="text/javascript"></script>
-    <script type="text/javascript" src="js/jquery-ui/jquery.ui.core.min.js"></script>
-    <script src="js/jquery-ui/jquery.ui.widget.min.js" type="text/javascript"></script>
-    <script src="js/jquery-ui/jquery.ui.accordion.min.js" type="text/javascript"></script>
-    <script src="js/jquery-ui/jquery.effects.core.min.js" type="text/javascript"></script>
-    <script src="js/jquery-ui/jquery.effects.slide.min.js" type="text/javascript"></script>
-    <script src="js/jquery-ui/jquery.ui.mouse.min.js" type="text/javascript"></script>
-    <script src="js/jquery-ui/jquery.ui.sortable.min.js" type="text/javascript"></script>
-    <script src="js/table/jquery.dataTables.min.js" type="text/javascript"></script>
-    <!-- END: load jquery -->
-    <script type="text/javascript" src="js/table/table.js"></script>
-    <script src="js/setup.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            setupLeftMenu();
-            setSidebarHeight();
-        });
-    </script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản trị - Web Bán Hàng Online</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- jQuery và DataTables -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/admin.css">
 </head>
 
 <body>
-    <div class="container_12">
-        <div class="grid_12 header-repeat">
-            <div id="branding">
-                <div class="floatleft logo">
-                    <!-- <img src="img/livelogo.png" alt="Logo" /> -->
-                    <img src="./img/logo-admin.png" alt="Logo" style="border-radius: 50px; width:60px;height:60px; margin-top: -20px;" />
+    <header>
+        <div class="container">
+            <div class="header-left">
+                <div class="img">
+                    <img src="img/logo-admin.png" alt="Logo" class="logo">
                 </div>
-                <div class="floatleft middle">
+                <div class="brand-info">
                     <h1>Web Bán Hàng Online</h1>
-                    <p>Chuyên bán các thiết bị điện tử</p>
-                </div>
-                <div class="floatright">
-                    <div class="floatleft">
-                        <img src="img/img-profile.jpg" alt="Profile Pic" />
-                    </div>
-                    <div class="floatleft marginleft10">
-                        <ul class="inline-ul floatleft">
-                            <li>Hello <?php echo Session::get('adminName') ?></li>
-                            <?php
-                            if (isset($_GET['action']) && $_GET['action'] == 'logout') {
-                                Session::destroy();
-                            }
-                            ?>
-                            <li><a href="?action=logout">Logout</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="clear">
+                    <p>Chuyên bán thiết bị điện tử</p>
                 </div>
             </div>
+            <div class="header-right">
+                <img src="img/img-profile.jpg" alt="Profile" class="profile-pic">
+                <span>Xin chào, <?php echo Session::get('adminName'); ?></span>
+                <a href="?action=logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                <?php
+                if (isset($_GET['action']) && $_GET['action'] == 'logout') {
+                    Session::destroy();
+                }
+                ?>
+            </div>
         </div>
-        <div class="clear">
-        </div>
-        <div class="grid_12">
-            <ul class="nav main">
-                <li class="ic-dashboard"><a href="index.php"><span>Dashboard</span></a> </li>
-                <!-- <li class="ic-form-style"><a href=""><span>User Profile</span></a></li>
-				<li class="ic-typography"><a href="changepassword.php"><span>Change Password</span></a></li> -->
-                <!-- <li class="ic-grid-tables"><a href="inbox.php"><span>Inbox</span></a></li> -->
-                <!-- <li class="ic-charts"><a href=""><span>Visit Website</span></a></li> -->
+    </header>
+    <nav>
+        <div class="container">
+            <ul class="nav-list">
+                <li><a href="index.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="inbox.php"><i class="fas fa-inbox"></i> Inbox</a></li>
+                <li><a href="changepassword.php"><i class="fas fa-key"></i> Đổi mật khẩu</a></li>
+                <li><a href="../index.php" target="_blank"><i class="fas fa-globe"></i> Xem website</a></li>
             </ul>
         </div>
-        <div class="clear">
-        </div>
+    </nav>
+    <div class="main-container">

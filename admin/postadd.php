@@ -1,52 +1,44 @@
-﻿<?php include 'inc/header.php';?>
-<?php include 'inc/sidebar.php';?>
-<?php include '../classes/post.php'?>
+﻿<?php include 'inc/header.php'; ?>
+<?php include 'inc/sidebar.php'; ?>
+<?php include '../classes/PostCategory.php'; ?>
 <?php
-    $post = new Post();
-	if($_SERVER['REQUEST_METHOD'] === 'POST') {
-		$catName = $_POST['catName'];
-        $description = $_POST['description'];
-        $catStatus = $_POST['catStatus'];
-		$insertCatPost = $post->insert_categor_post($catName, $description, $catStatus);
-    }
+$post = new PostCategory();
+$message = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $title = $_POST['title'];
+    $description = $_POST['description'];
+    $status = $_POST['status'];
+    $insertPost = $post->insert_category($title, $description, $status);
+    $message = $insertPost['message'];
+}
 ?>
-        <div class="grid_10">
-            <div class="box round first grid">
-                <h2>Thêm danh mục</h2>
-               <div class="block copyblock">
-               <?php 
-                    if(isset($insertCatPost)){
-                        echo $insertCatPost;
-                    }
-                ?> 
-                 <form action="postadd.php" method="post">
-                    <table class="form">					
-                        <tr>
-                            <td>
-                                <input type="text" name="catName" placeholder="Nhập danh mục" class="medium" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="text" name="description" placeholder="Nhập mô tả" class="medium" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <select name="catStatus">
-                                    <option value="1">Hiển thị</option>
-                                    <option value="0">Ẩn</option>
-                                </select>
-                            </td>
-                        </tr>
-						<tr> 
-                            <td>
-                                <input type="submit" name="submit" Value="Save" />
-                            </td>
-                        </tr>
-                    </table>
-                    </form>
-                </div>
+<div class="content">
+    <div class="box">
+        <h2>Thêm danh mục tin tức</h2>
+        <?php if ($message): ?>
+            <div class="alert <?php echo strpos($message, 'thành công') !== false ? 'alert-success' : 'alert-error'; ?>">
+                <?php echo $message; ?>
             </div>
-        </div>
-<?php include 'inc/footer.php';?>
+        <?php endif; ?>
+        <form action="postadd.php" method="post">
+            <div class="form-group">
+                <label for="title">Tên danh mục:</label>
+                <input type="text" id="title" name="title" placeholder="Nhập tên danh mục..." required>
+            </div>
+            <div class="form-group">
+                <label for="description">Mô tả:</label>
+                <input type="text" id="description" name="description" placeholder="Nhập mô tả...">
+            </div>
+            <div class="form-group">
+                <label for="status">Trạng thái:</label>
+                <select id="status" name="status" required>
+                    <option value="">Chọn trạng thái</option>
+                    <option value="0">Ẩn</option>
+                    <option value="1">Hiển thị</option>
+                </select>
+            </div>
+            <button type="submit" class="btn"><i class="fas fa-save"></i> Lưu</button>
+        </form>
+    </div>
+</div>
+<?php include 'inc/footer.php'; ?>

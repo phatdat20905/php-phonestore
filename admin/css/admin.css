@@ -1,0 +1,292 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+header {
+    background: #2c3e50;
+    color: white;
+    padding: 15px 0;
+}
+
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.header-right {
+    display: flex;
+    gap: 10px;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.brand-info h1 {
+    font-size: 24px;
+}
+
+.brand-info p {
+    font-size: 14px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.logout-btn {
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    background: #e74c3c;
+    border-radius: 4px;
+}
+
+.logout-btn:hover {
+    background: #c0392b;
+}
+
+nav {
+    background: #34495e;
+    padding: 10px 0;
+}
+
+.nav-list {
+    list-style: none;
+    display: flex;
+}
+
+.nav-list li {
+    margin-right: 20px;
+}
+
+.nav-list li a {
+    color: white;
+    text-decoration: none;
+}
+
+.nav-list li a i {
+    margin-right: 5px;
+}
+
+.main-container {
+    display: flex;
+    min-height: calc(100vh - 150px);
+}
+
+.sidebar {
+    width: 250px;
+    background: #ecf0f1;
+    padding: 20px;
+}
+
+.sidebar-menu {
+    list-style: none;
+}
+
+.menu-item {
+    display: block;
+    padding: 10px;
+    color: #2c3e50;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.menu-item i {
+    margin-right: 10px;
+}
+
+.submenu {
+    display: none;
+    list-style: none;
+    padding-left: 20px;
+}
+
+.submenu li a {
+    display: block;
+    padding: 8px 0;
+    color: #34495e;
+    text-decoration: none;
+}
+
+.submenu li a:hover {
+    color: #2c3e50;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+.box {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.box h2 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.alert {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.btn {
+    padding: 10px 20px;
+    background: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn:hover {
+    background: #34495e;
+}
+
+.btn-edit {
+    background: #f39c12;
+}
+
+.btn-edit:hover {
+    background: #e67e22;
+}
+
+.btn-delete {
+    background: #e74c3c;
+    margin-left: 10px;
+}
+
+.btn-delete:hover {
+    background: #c0392b;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.data-table th {
+    background: #34495e;
+    color: white;
+}
+
+.data-table td {
+    background: white;
+}
+
+.data-table tr:hover td {
+    background: #f9f9f9;
+}
+
+footer {
+    background: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+}
+
+footer a {
+    color: #ecf0f1;
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+    }
+    .nav-list {
+        flex-direction: column;
+        align-items: center;
+    }
+    .nav-list li {
+        margin: 10px 0;
+    }
+    .header-left, .header-right {
+        text-align: center;
+    }
+    .header-right {
+        margin-top: 10px;
+    }
+}

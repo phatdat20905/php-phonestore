@@ -1,38 +1,30 @@
-﻿<?php include 'inc/header.php';?>
-<?php include 'inc/sidebar.php';?>
-<?php include '../classes/category.php'?>
+﻿<?php include 'inc/header.php'; ?>
+<?php include 'inc/sidebar.php'; ?>
+<?php include '../classes/Category.php'; ?>
 <?php
-    $cat = new Category();
-	if($_SERVER['REQUEST_METHOD'] === 'POST') {
-		$catName = $_POST['catName'];
-
-		$insertCat = $cat->insert_category($catName);
-    }
+$cat = new Category();
+$message = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $cat_name = $_POST['cat_name'];
+    $insertCat = $cat->insert_category($cat_name);
+    $message = $insertCat['message'];
+}
 ?>
-        <div class="grid_10">
-            <div class="box round first grid">
-                <h2>Thêm danh mục</h2>
-               <div class="block copyblock">
-               <?php 
-                    if(isset($insertCat)){
-                        echo $insertCat;
-                    }
-                ?> 
-                 <form action="catadd.php" method="post">
-                    <table class="form">					
-                        <tr>
-                            <td>
-                                <input type="text" name="catName" placeholder="Enter Category Name..." class="medium" />
-                            </td>
-                        </tr>
-						<tr> 
-                            <td>
-                                <input type="submit" name="submit" Value="Save" />
-                            </td>
-                        </tr>
-                    </table>
-                    </form>
-                </div>
+<div class="content">
+    <div class="box">
+        <h2>Thêm danh mục sản phẩm</h2>
+        <?php if ($message): ?>
+            <div class="alert <?php echo strpos($message, 'thành công') !== false ? 'alert-success' : 'alert-error'; ?>">
+                <?php echo $message; ?>
             </div>
-        </div>
-<?php include 'inc/footer.php';?>
+        <?php endif; ?>
+        <form action="catadd.php" method="post">
+            <div class="form-group">
+                <label for="cat_name">Tên danh mục:</label>
+                <input type="text" id="cat_name" name="cat_name" placeholder="Nhập tên danh mục..." required>
+            </div>
+            <button type="submit" class="btn"><i class="fas fa-save"></i> Lưu</button>
+        </form>
+    </div>
+</div>
+<?php include 'inc/footer.php'; ?>

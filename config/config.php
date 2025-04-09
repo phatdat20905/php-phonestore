@@ -2,5 +2,4 @@
 define("DB_HOST", "localhost");
 define("DB_USER", "root");
 define("DB_PASS", "");
-define("DB_NAME", "webbanhang");
-?>
+define("DB_NAME", "phone_store");

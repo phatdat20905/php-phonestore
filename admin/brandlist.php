@@ -1,63 +1,53 @@
 ﻿<?php include 'inc/header.php'; ?>
 <?php include 'inc/sidebar.php'; ?>
-<?php include '../classes/brand.php'; ?>
+<?php include '../classes/Brand.php'; ?>
 <?php
-$cat = new Brand();
+$brand = new Brand();
+$message = '';
 if (isset($_GET['delId'])) {
 	$id = $_GET['delId'];
-	$delbrand = $cat->delete_brand($id);
+	$delbrand = $brand->delete_brand($id);
+	$message = $delbrand['message'];
 }
 ?>
-<div class="grid_10">
-	<div class="box round first grid">
-		<h2>Danh sách thương hiệu</h2>
-		<div class="block">
-			<?php
-			if (isset($delbrand)) {
-				echo $delbrand;
-			}
-			?>
-			<table class="data display datatable" id="example">
-				<thead>
-					<tr>
-						<th>Serial No.</th>
-						<th>Category Name</th>
-						<th>Action</th>
-					</tr>
-				</thead>
-				<t>
-					<?php
-					$show_cat = $cat->show_brand();
-					if ($show_cat) {
-						$i = 0;
-						while ($result = $show_cat->fetch_assoc()) {
-							$i++;
-					?>
-							<tr class="odd gradeX">
-								<td><?php echo $i ?></td>
-								<td><?php echo $result['brandName'] ?></td>
-								<td><a href="brandedit.php?brandId=<?php echo $result['brandId'] ?>">Edit</a> || <a
-										onclick="return confirm('Are you sure you want to delete <?php echo $result['brandName'] ?>?')"
-										href="?delId=<?php echo $result['brandId'] ?>">Delete
-									</a>
-								</td>
-							</tr>
-					<?php
-						}
+<div class="content">
+	<div class="box">
+		<h2>Danh sách thương hiệu sản phẩm</h2>
+		<?php if ($message): ?>
+			<div class="alert <?php echo strpos($message, 'thành công') !== false ? 'alert-success' : 'alert-error'; ?>">
+				<?php echo $message; ?>
+			</div>
+		<?php endif; ?>
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th>STT</th>
+					<th>Tên thương hiệu</th>
+					<th>Hành động</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				$brandlist = $brand->show_brand();
+				if ($brandlist) {
+					$i = 0;
+					while ($result = $brandlist->fetch_assoc()) {
+						$i++;
+				?>
+						<tr>
+							<td><?php echo $i; ?></td>
+							<td><?php echo $result['brand_name']; ?></td>
+							<td>
+								<a href="brandedit.php?brandId=<?php echo $result['brand_id']; ?>" class="btn btn-edit"><i class="fas fa-edit"></i> Sửa</a>
+								<a href="?delId=<?php echo $result['brand_id']; ?>" class="btn btn-delete"><i class="fas fa-trash"></i> Xóa</a>
+							</td>
+						</tr>
+				<?php
 					}
-
-					?>
-					</tbody>
-			</table>
-		</div>
+				}
+				?>
+			</tbody>
+		</table>
 	</div>
 </div>
-<script type="text/javascript">
-	$(document).ready(function() {
-		setupLeftMenu();
-
-		$('.datatable').dataTable();
-		setSidebarHeight();
-	});
-</script>
 <?php include 'inc/footer.php'; ?>

@@ -1,81 +1,61 @@
-﻿<?php include 'inc/header.php';?>
-<?php include 'inc/sidebar.php';?>
-<?php include '../classes/post.php';?>
-<?php include '../classes/blog.php';?>
-<?php include_once '../helpers/format.php';?>
-<?php 
-	$blog = new Blog();
-	$fm = new Format();
-	if(isset($_GET['blogId'])) {
-        $id = $_GET['blogId'];
-		$delpro = $blog->delete_blog($id);
-    }
+﻿<?php include 'inc/header.php'; ?>
+<?php include 'inc/sidebar.php'; ?>
+<?php include '../classes/Blog.php'; ?>
+<?php
+$blog = new Blog();
+$message = '';
+if (isset($_GET['delId'])) {
+	$id = $_GET['delId'];
+	$delBlog = $blog->delete_blog($id);
+	$message = $delBlog['message'];
+}
 ?>
-<div class="grid_10">
-    <div class="box round first grid">
-        <h2>Blog List</h2>
-        <div class="block">
-		<?php 
-			if(isset($delpro)){
-				echo $delpro;
-			}
-		?>    
-            <table class="data display datatable" id="example">
+<div class="content">
+	<div class="box">
+		<h2>Danh sách tin tức</h2>
+		<?php if ($message): ?>
+			<div class="alert <?php echo strpos($message, 'thành công') !== false ? 'alert-success' : 'alert-error'; ?>">
+				<?php echo $message; ?>
+			</div>
+		<?php endif; ?>
+		<table class="data-table">
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>Blog Title</th>
-					<th>Blog Image</th>
-					<th>Blog Desc</th>
-					<th>Blog Content</th>
-					<th>Category Post</th>
-					<th>Blog Status</th>
-					<th>Action</th>
+					<th>STT</th>
+					<th>Tiêu đề</th>
+					<th>Danh mục</th>
+					<th>Mô tả</th>
+					<th>Hình ảnh</th>
+					<th>Trạng thái</th>
+					<th>Hành động</th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php
-					$bloglist = $blog->show_blog();
-					if($bloglist){
-						$i = 0;
-                        while($result = $bloglist->fetch_assoc()){
-							$i++;
-                ?>
-				<tr class="odd gradeX">
-					<td><?php echo $i?></td>
-					<td><?php echo $result['blog_title']?></td>
-					<td><img src="uploads/<?php echo $result['image']?>" alt="Ảnh sản phẩm" width="80"></td>
-					<td><?php echo $fm->textShorten($result['description'], 20)?></td>
-					<td><?php echo $fm->textShorten($result['content'], 20)?></td>
-					<td><?php echo $result['title']?></td>
-					<td>
-						<?php 
-							if($result['status'] == 1){
-								echo "Hiển thị";
-							} else {
-								echo "Ẩn";
-							}
-						?>
-					</td>
-					<td><a href="blogedit.php?blogId=<?php echo $result['id']?>">Edit</a> || <a  
-							onclick="return confirm('Are you sure you want to delete <?php echo $result['title']?>?')"
-							href="?blogId=<?php echo $result['id']?>">Delete
-						</a>
-					</td>
-				</tr>
-				<?php } }?>
+				$bloglist = $blog->show_blog();
+				if ($bloglist) {
+					$i = 0;
+					while ($result = $bloglist->fetch_assoc()) {
+						$i++;
+				?>
+						<tr>
+							<td><?php echo $i; ?></td>
+							<td><?php echo $result['blog_title']; ?></td>
+							<td><?php echo $result['title']; ?></td>
+							<td><?php echo substr($result['description'], 0, 50) . '...'; ?></td>
+							<td><img src="uploads/<?php echo $result['image']; ?>" alt="Blog Image" width="80"></td>
+							<td><?php echo $result['status'] == 0 ? 'Ẩn' : 'Hiển thị'; ?></td>
+							<td>
+								<a href="blogedit.php?blogId=<?php echo $result['blog_id']; ?>" class="btn btn-edit"><i class="fas fa-edit"></i> Sửa</a>
+								<a href="?delId=<?php echo $result['blog_id']; ?>" class="btn btn-delete"><i class="fas fa-trash"></i> Xóa</a>
+							</td>
+						</tr>
+				<?php
+					}
+				}
+				?>
 			</tbody>
 		</table>
-
-       </div>
-    </div>
+	</div>
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        setupLeftMenu();
-        $('.datatable').dataTable();
-		setSidebarHeight();
-    });
-</script>
-<?php include 'inc/footer.php';?>
+<?php include 'inc/footer.php'; ?>

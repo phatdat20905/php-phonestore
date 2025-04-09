@@ -1,12 +1,10 @@
- <div class="clear">
-        </div>
+</div> <!-- Đóng main-container -->
+<footer>
+    <div class="container">
+        <p>© 2025 <a href="#">Web Bán Hàng Online</a>. All Rights Reserved.</p>
     </div>
-    <div class="clear">
-    </div>
-    <div id="site_info">
-        <p>
-         &copy; Copyright <a href="#">Web bán hàng online</a>. All Rights Reserved.
-        </p>
-    </div>
+</footer>
+<script src="js/admin.js"></script>
 </body>
+
 </html>

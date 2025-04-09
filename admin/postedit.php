@@ -1,79 +1,54 @@
-﻿<?php include 'inc/header.php';?>
-<?php include 'inc/sidebar.php';?>
-<?php include '../classes/post.php'?>
+﻿<?php include 'inc/header.php'; ?>
+<?php include 'inc/sidebar.php'; ?>
+<?php include '../classes/PostCategory.php'; ?>
 <?php
-    $post = new Post();
-    if(!isset($_GET['catId']) || $_GET['catId'] == NULL) {
-        echo "<script>window.location='postlist.php';</script>";
-    }else {
-        $id = $_GET['catId'];
-    }
-    if($_SERVER['REQUEST_METHOD'] === 'POST') {
-		$catName = $_POST['catName'];
-        $description = $_POST['description'];
-        $catStatus = $_POST['catStatus'];
-		$updateCat = $post->update_category_post($catName, $description, $catStatus, $id);
-    }
-
+$post = new PostCategory();
+if (!isset($_GET['postId']) || empty($_GET['postId'])) {
+    echo "<script>window.location='postlist.php';</script>";
+    exit;
+}
+$id = $_GET['postId'];
+$message = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $title = $_POST['title'];
+    $description = $_POST['description'];
+    $status = $_POST['status'];
+    $updatePost = $post->update_category($title, $description, $status, $id);
+    $message = $updatePost['message'];
+}
+$post_data = $post->get_category_by_id($id);
+if (!$post_data) {
+    echo "<script>window.location='postlist.php';</script>";
+    exit;
+}
+$result = $post_data->fetch_assoc();
 ?>
-        <div class="grid_10">
-            <div class="box round first grid">
-                <h2>Sửa danh mục tin tức</h2>
-               <div class="block copyblock">
-               <?php 
-                    if(isset($updateCat)){
-                        echo $updateCat;
-                    }
-                ?> 
-                <?php 
-                    $get_cat_post = $post->get_cat_by_id($id);
-                    if($get_cat_post){
-                        while($result = $get_cat_post->fetch_assoc()){
-
-                ?>
-                 <form action="" method="post">
-                    <table class="form">					
-                        <tr>
-                            <td>
-                                <input type="text" value="<?php echo $result['title']?>" name="catName" placeholder="Sửa danh mục sản phẩm ..." class="medium" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="text" value="<?php echo $result['description']?>" name="description" placeholder="Nhập mô tả" class="medium" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <select name="catStatus">
-                                    <?php 
-                                        if($result['status'] == 1){
-                                    ?>
-                                        <option selected value="1">Hiển thị</option>
-                                        <option value="0">Ẩn</option>
-                                    <?php 
-                                        }else{
-                                    ?>
-                                            <option value="1">Hiển thị</option>
-                                            <option selected value="0">Ẩn</option>
-                                    <?php
-                                        }    
-                                    ?>
-                                </select>
-                            </td>
-                        </tr>
-						<tr> 
-                            <td>
-                                <input type="submit" name="submit" Value="Save" />
-                            </td>
-                        </tr>
-                    </table>
-                    </form>
-                    <?php 
-                        }
-                    }
-                    ?>
-                </div>
+<div class="content">
+    <div class="box">
+        <h2>Sửa danh mục tin tức</h2>
+        <?php if ($message): ?>
+            <div class="alert <?php echo strpos($message, 'thành công') !== false ? 'alert-success' : 'alert-error'; ?>">
+                <?php echo $message; ?>
             </div>
-        </div>
-<?php include 'inc/footer.php';?>
+        <?php endif; ?>
+        <form action="" method="post">
+            <div class="form-group">
+                <label for="title">Tên danh mục:</label>
+                <input type="text" id="title" name="title" value="<?php echo $result['title']; ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Mô tả:</label>
+                <input type="text" id="description" name="description" value="<?php echo $result['description']; ?>">
+            </div>
+            <div class="form-group">
+                <label for="status">Trạng thái:</label>
+                <select id="status" name="status" required>
+                    <option value="0" <?php if ($result['status'] == 0) echo 'selected'; ?>>Ẩn</option>
+                    <option value="1" <?php if ($result['status'] == 1) echo 'selected'; ?>>Hiển thị</option>
+                </select>
+            </div>
+            <button type="submit" class="btn"><i class="fas fa-save"></i> Cập nhật</button>
+        </form>
+    </div>
+</div>
+<?php include 'inc/footer.php'; ?>

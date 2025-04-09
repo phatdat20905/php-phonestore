@@ -1,114 +1,48 @@
 <?php
-
 $filepath = realpath(dirname(__FILE__));
-include_once($filepath . '/../lib/database.php');
-include_once($filepath . '/../helpers/format.php');
-?>
-<?php
+include_once($filepath . '/../lib/Database.php');
+
 class Category
 {
     private $db;
-    public $fm;
 
     public function __construct()
     {
         $this->db = new Database();
-        $this->fm = new Format();
     }
 
-
-    public function insert_category($catName)
+    public function insert_category($cat_name)
     {
-        $catName = $this->fm->validation($catName);
-
-        $catName = mysqli_real_escape_string($this->db->link, $catName);
-
-        if (empty($catName)) {
-            $alert = "<span class='error'>Category must be not empty</span>";
-            return $alert;
-        } else {
-            $query = "INSERT INTO tbl_category(catName) VALUES('$catName')";
-            $result = $this->db->insert($query);
-
-            if ($result) {
-                $alert = "<span class='success'>Category Inserted Successfully</span>";
-                return $alert;
-            } else {
-                $alert = "<span class='error'>Category Insert Failed</span>";
-                return $alert;
-            }
-        }
+        $cat_name = $this->db->link->real_escape_string($cat_name);
+        $query = "INSERT INTO category (cat_name) VALUES ('$cat_name')";
+        $result = $this->db->insert($query);
+        return ['success' => $result, 'message' => $result ? 'Thêm thành công!' : 'Lỗi khi thêm danh mục'];
     }
 
     public function show_category()
     {
-        $query = "SELECT * FROM tbl_category ORDER BY catId";
-        $result = $this->db->select($query);
-        return $result;
+        $query = "SELECT * FROM category ORDER BY cat_id DESC";
+        return $this->db->select($query);
     }
 
-    public function update_category($catName, $catId)
+    public function get_category_by_id($id)
     {
-        $catName = $this->fm->validation($catName);
-        $catName = mysqli_real_escape_string($this->db->link, $catName);
-
-        $catId = mysqli_real_escape_string($this->db->link, $catId);
-        if (empty($catName)) {
-            $alert = "<span class='error'>Category must be not empty</span>";
-            return $alert;
-        } else {
-            $query = "UPDATE tbl_category SET catName='$catName' WHERE catId='$catId'";
-            $result = $this->db->update($query);
-
-            if ($result) {
-                $alert = "<span class='success'>Category Updated Successfully</span>";
-                return $alert;
-            } else {
-                $alert = "<span class='error'>Category Update Failed</span>";
-                return $alert;
-            }
-        }
+        $query = "SELECT * FROM category WHERE cat_id = '$id'";
+        return $this->db->select($query);
     }
 
-    public function delete_category($catId)
+    public function update_category($cat_name, $id)
     {
+        $cat_name = $this->db->link->real_escape_string($cat_name);
+        $query = "UPDATE category SET cat_name = '$cat_name' WHERE cat_id = '$id'";
+        $result = $this->db->update($query);
+        return ['success' => $result, 'message' => $result ? 'Cập nhật thành công!' : 'Lỗi khi cập nhật'];
+    }
 
-        $query = "DELETE FROM tbl_category WHERE catId = '$catId'";
+    public function delete_category($id)
+    {
+        $query = "DELETE FROM category WHERE cat_id = '$id'";
         $result = $this->db->delete($query);
-
-        if ($result) {
-            $alert = "<span class='success'>Category Deleted Successfully</span>";
-            return $alert;
-        } else {
-            $alert = "<span class='error'>Category Delete Failed</span>";
-            return $alert;
-        }
-    }
-
-    public function get_cat_by_id($catId)
-    {
-        $query = "SELECT * FROM tbl_category WHERE catId = '$catId'";
-        $result = $this->db->select($query);
-        return $result;
-    }
-
-    public function show_category_frontend()
-    {
-        $query = "SELECT * FROM tbl_category ORDER BY catId";
-        $result = $this->db->select($query);
-        return $result;
-    }
-    public function get_product_by_cat($id)
-    {
-        $query = "SELECT * FROM tbl_product WHERE catId = '$id' ORDER BY catId DESC LIMIT 8";
-        $result = $this->db->select($query);
-        return $result;
-    }
-    public function get_name_by_cat($id)
-    {
-        $query = "SELECT p.*, c.catName, c.catId FROM tbl_product as p, tbl_category as c WHERE p.catId = c.catId AND c.catId = '$id' LIMIT 1";
-        $result = $this->db->select($query);
-        return $result;
+        return ['success' => $result, 'message' => $result ? 'Xóa thành công!' : 'Lỗi khi xóa'];
     }
 }
-?>

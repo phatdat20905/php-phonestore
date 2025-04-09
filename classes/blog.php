@@ -1,146 +1,74 @@
-<?php 
-    $filepath = realpath(dirname(__FILE__));
-    include_once ($filepath.'/../lib/database.php');
-    include_once ($filepath.'/../helpers/format.php');
-?>
 <?php
-    class Blog 
-    {   
-        private $db;
-        public $fm;
-        
-        public function __construct() {
-            $this->db = new Database();
-            $this->fm = new Format();
-        }
+$filepath = realpath(dirname(__FILE__));
+include_once($filepath . '/../lib/Database.php');
 
-        
-        public function insert_blog($data, $files) {
-            $blog_title = mysqli_real_escape_string($this->db->link, $data['blog_title']);
-            $content = mysqli_real_escape_string($this->db->link, $data['content']);
-            $category = mysqli_real_escape_string($this->db->link, $data['category']);
-            $description = mysqli_real_escape_string($this->db->link, $data['description']);
-            $status = mysqli_real_escape_string($this->db->link, $data['status']);
-            
-            
-            $permited = array('jpg', 'jpeg', 'png', 'gif');
-            $file_name = $_FILES['image']['name'];
-            $file_size = $_FILES['image']['size'];
-            $file_temp = $_FILES['image']['tmp_name'];
+class Blog
+{
+    private $db;
 
-            $div = explode('.', $file_name);
-            $file_ext = strtolower(end($div));
-            $unique_image = substr(md5(time()), 0, 10). '.'. $file_ext;
-            $uploaded_image = "uploads/".$unique_image;
-
-            if($blog_title == '' || $content == '' || $category == '' || $description == '' || $status == '' || $file_name == '') {
-                $alert = "<span class='error'>Fields must be not empty</span>";
-                return $alert;
-            } else {
-                move_uploaded_file($file_temp, $uploaded_image);
-                $query = "INSERT INTO tbl_blog(blog_title,content,description,category_post,status,image) VALUES('$blog_title','$content', '$description', '$category','$status', '$unique_image')";
-                $result = $this->db->insert($query);
-                
-                if($result) {
-                    $alert = "<span class='success'>Blog Inserted Successfully</span>";
-                    return $alert;
-                } else {
-                    $alert = "<span class='error'>Blog Insert Failed</span>";
-                    return $alert;    
-                }
-            }
-        }
-        
-        public function show_blog() {
-            $query = "SELECT b.*, c.title
-                    FROM tbl_blog as b, tbl_category_post as c WHERE b.category_post = c.id_cate_post
-                    ORDER BY b.id";
-            $result = $this->db->select($query);
-            return $result;
-        }
-        
-        public function update_blog($data, $files, $id) {
-            $blog_title = mysqli_real_escape_string($this->db->link, $data['blog_title']);
-            $category = mysqli_real_escape_string($this->db->link, $data['category']);
-            $content = mysqli_real_escape_string($this->db->link, $data['content']);
-            $description = mysqli_real_escape_string($this->db->link, $data['description']);
-            $status = mysqli_real_escape_string($this->db->link, $data['status']);            
-            
-            $permited = array('jpg', 'jpeg', 'png', 'gif');
-            $file_name = $_FILES['image']['name'];
-            $file_size = $_FILES['image']['size'];
-            $file_temp = $_FILES['image']['tmp_name'];
-
-            $div = explode('.', $file_name);
-            $file_ext = strtolower(end($div));
-            $unique_image = substr(md5(time()), 0, 10). '.'. $file_ext;
-            $uploaded_image = "uploads/".$unique_image;
-            if($blog_title == '' || $content == '' || $category == '' || $description == '' || $status == '') {
-                $alert = "<span class='error'>Fields must be not empty</span>";
-                return $alert;
-            } else {
-                if(!empty($file_name)){
-                    if($file_size > 20480){
-                        $alert = "<span class='error'>Image Size should be less than 2MB</span>";
-                        return $alert;
-                    }
-                    elseif(in_array($file_ext, $permited) === false){
-                        $alert = "<span class='error'>You can upload only:- ".implode(', ', $permited)."</span>";
-                        return $alert;
-                    }
-                    $query = "UPDATE tbl_blog SET 
-                    blog_title='$blog_title', 
-                    category_post='$category', 
-                    content='$content', 
-                    description='$description', 
-                    status='$status',
-                    image='$unique_image' 
-                    WHERE id='$id'";
-                } else{
-                    $query = "UPDATE tbl_blog SET 
-                    blog_title='$blog_title', 
-                    category_post='$category', 
-                    content='$content', 
-                    description='$description', 
-                    status='$status' 
-                    WHERE id='$id'";
-                }
-                $result = $this->db->update($query);
-                if($result) {
-                    $alert = "<span class='success'>Blog Updated Successfully</span>";
-                    return $alert;
-                } else {
-                    $alert = "<span class='error'>Blog Update Failed</span>";
-                    return $alert;    
-                }
-            }
-        }
-        
-        public function delete_blog($id) {
-            
-            $query = "DELETE FROM tbl_blog WHERE id = '$id'";
-            $result = $this->db->delete($query);
-            
-            if($result) {
-                $alert = "<span class='success'>Blog Deleted Successfully</span>";
-                return $alert;
-            } else {
-                $alert = "<span class='error'>Blog Delete Failed</span>";
-                return $alert;    
-            }
-        }
-        
-        public function get_blog_by_id($id) {
-            $query = "SELECT * FROM tbl_blog WHERE id = '$id'";
-            $result = $this->db->select($query);
-            return $result;
-        }
-        
-
-        public function get_all_product() {
-            $query = "SELECT * FROM tbl_product";
-            $result = $this->db->select($query);
-            return $result;
-        }
+    public function __construct()
+    {
+        $this->db = new Database();
     }
-?>
+
+    public function insert_blog($data, $files)
+    {
+        $blog_title = $this->db->link->real_escape_string($data['blog_title']);
+        $post_cat_id = $this->db->link->real_escape_string($data['post_cat_id']);
+        $description = $this->db->link->real_escape_string($data['description']);
+        $content = $this->db->link->real_escape_string($data['content']);
+        $status = $this->db->link->real_escape_string($data['status']);
+        $image = $this->upload_image($files['image']);
+
+        $query = "INSERT INTO blog (blog_title, post_cat_id, description, content, image, status) 
+                  VALUES ('$blog_title', '$post_cat_id', '$description', '$content', '$image', '$status')";
+        $result = $this->db->insert($query);
+        return ['success' => $result, 'message' => $result ? 'Thêm thành công!' : 'Lỗi khi thêm tin tức'];
+    }
+
+    public function show_blog()
+    {
+        $query = "SELECT b.*, pc.title 
+                  FROM blog b 
+                  JOIN post_category pc ON b.post_cat_id = pc.post_cat_id 
+                  ORDER BY b.blog_id DESC";
+        return $this->db->select($query);
+    }
+
+    public function get_blog_by_id($id)
+    {
+        $query = "SELECT * FROM blog WHERE blog_id = '$id'";
+        return $this->db->select($query);
+    }
+
+    public function update_blog($data, $files, $id)
+    {
+        $blog_title = $this->db->link->real_escape_string($data['blog_title']);
+        $post_cat_id = $this->db->link->real_escape_string($data['post_cat_id']);
+        $description = $this->db->link->real_escape_string($data['description']);
+        $content = $this->db->link->real_escape_string($data['content']);
+        $status = $this->db->link->real_escape_string($data['status']);
+        $image = !empty($files['image']['name']) ? $this->upload_image($files['image']) : $data['current_image'];
+
+        $query = "UPDATE blog SET blog_title = '$blog_title', post_cat_id = '$post_cat_id', description = '$description', 
+                  content = '$content', image = '$image', status = '$status' WHERE blog_id = '$id'";
+        $result = $this->db->update($query);
+        return ['success' => $result, 'message' => $result ? 'Cập nhật thành công!' : 'Lỗi khi cập nhật'];
+    }
+
+    public function delete_blog($id)
+    {
+        $query = "DELETE FROM blog WHERE blog_id = '$id'";
+        $result = $this->db->delete($query);
+        return ['success' => $result, 'message' => $result ? 'Xóa thành công!' : 'Lỗi khi xóa'];
+    }
+
+    private function upload_image($file)
+    {
+        $target_dir = "uploads/";
+        $file_name = time() . "_" . basename($file["name"]);
+        $target_file = $target_dir . $file_name;
+        move_uploaded_file($file["tmp_name"], $target_file);
+        return $file_name;
+    }
+}

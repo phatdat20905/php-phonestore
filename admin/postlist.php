@@ -1,77 +1,57 @@
-﻿<?php include 'inc/header.php';?>
-<?php include 'inc/sidebar.php';?>
-<?php include '../classes/post.php';?>
-<?php 
-	$post = new Post();
-	if(isset($_GET['delId'])) {
-        $id = $_GET['delId'];
-		$delcatpost = $post->delete_category_post($id);
-    }
+﻿<?php include 'inc/header.php'; ?>
+<?php include 'inc/sidebar.php'; ?>
+<?php include '../classes/PostCategory.php'; ?>
+<?php
+$post = new PostCategory();
+$message = '';
+if (isset($_GET['delId'])) {
+	$id = $_GET['delId'];
+	$delPost = $post->delete_category($id);
+	$message = $delPost['message'];
+}
 ?>
-        <div class="grid_10">
-            <div class="box round first grid">
-                <h2>Category Post List</h2>
-                <div class="block"> 
-				<?php 
-                    if(isset($delcatpost)){
-                        echo $delcatpost;
-                    }
-                ?>        
-                    <table class="data display datatable" id="example">
-					<thead>
+<div class="content">
+	<div class="box">
+		<h2>Danh sách danh mục tin tức</h2>
+		<?php if ($message): ?>
+			<div class="alert <?php echo strpos($message, 'thành công') !== false ? 'alert-success' : 'alert-error'; ?>">
+				<?php echo $message; ?>
+			</div>
+		<?php endif; ?>
+		<table class="data-table">
+			<thead>
+				<tr>
+					<th>STT</th>
+					<th>Tên danh mục</th>
+					<th>Mô tả</th>
+					<th>Trạng thái</th>
+					<th>Hành động</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				$postlist = $post->show_category();
+				if ($postlist) {
+					$i = 0;
+					while ($result = $postlist->fetch_assoc()) {
+						$i++;
+				?>
 						<tr>
-							<th>Serial No.</th>
-							<th>Category Post Name</th>
-							<th>Category Post Desc</th>
-							<th>Category Post Status</th>
-							<th>Action</th>
+							<td><?php echo $i; ?></td>
+							<td><?php echo $result['title']; ?></td>
+							<td><?php echo $result['description']; ?></td>
+							<td><?php echo $result['status'] == 0 ? 'Ẩn' : 'Hiển thị'; ?></td>
+							<td>
+								<a href="postedit.php?postId=<?php echo $result['post_cat_id']; ?>" class="btn btn-edit"><i class="fas fa-edit"></i> Sửa</a>
+								<a href="?delId=<?php echo $result['post_cat_id']; ?>" class="btn btn-delete"><i class="fas fa-trash"></i> Xóa</a>
+							</td>
 						</tr>
-					</thead>
-					<t>
-						<?php 
-							$show_cat = $post->show_category_post();
-							if($show_cat){
-                                $i = 0;
-                                while($result = $show_cat->fetch_assoc()){
-                                    $i++;
-                        ?>
-							<tr class="odd gradeX">
-								<td><?php echo $i?></td>
-								<td><?php echo $result['title']?></td>
-								<td><?php echo $result['description']?></td>
-								<td>
-									<?php 
-                                        if($result['status'] == 0) {
-                                            echo "Ẩn";
-                                        } else {
-                                            echo "Hiển thị";
-                                        }
-                                   ?>
-                                </td>
-								</td>
-								<td><a href="postedit.php?catId=<?php echo $result['id_cate_post']?>">Edit</a> || <a  
-										onclick="return confirm('Are you sure you want to delete <?php echo $result['title']?>?')"
-										href="?delId=<?php echo $result['id_cate_post']?>">Delete
-									</a>
-								</td>
-							</tr>
-						<?php
-								}
-							}
-
-						?>    
-					</tbody>
-				</table>
-               </div>
-            </div>
-        </div>
-<script type="text/javascript">
-	$(document).ready(function () {
-	    setupLeftMenu();
-
-	    $('.datatable').dataTable();
-	    setSidebarHeight();
-	});
-</script>
-<?php include 'inc/footer.php';?>
-
+				<?php
+					}
+				}
+				?>
+			</tbody>
+		</table>
+	</div>
+</div>
+<?php include 'inc/footer.php'; ?>
