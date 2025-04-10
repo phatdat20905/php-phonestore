@@ -1,155 +1,166 @@
 <?php
 include 'inc/header.php';
-// include 'inc/slider.php';
-?>
 
-<?php
+$login_check = Session::get('customer_login');
+if ($login_check == false) {
+	header('Location:login.php');
+	exit;
+}
+
+$ct = new Cart();
+$order = new Order();
+
 if (isset($_GET['orderid']) && $_GET['orderid'] == 'order') {
 	$customer_id = Session::get('customer_id');
-	$inserOrder = $ct->insertOrder($customer_id);
-	// $delcart = $ct->del_all_data_cart();
-	// header('Location:success.php');
+	$cart_items = $ct->get_cart_items();
+	$products = [];
+	while ($item = $cart_items->fetch_assoc()) {
+		$products[] = [
+			'product_id' => $item['product_id'],
+			'product_name' => $item['product_name'],
+			'quantity' => $item['quantity'],
+			'price' => $item['price']
+		];
+	}
+	$result = $order->insert_order($customer_id, $products);
+	if ($result['success']) {
+		$ct->clear_cart(); // Xóa giỏ hàng mà không hoàn tồn kho
+		header("Location: success.php?order_id=" . $result['order_id']);
+		exit;
+	} else {
+		$message = $result['message'];
+	}
 }
 ?>
 
 <div class="main">
 	<div class="content">
 		<h3>Thanh toán ngoại tuyến</h3>
-		<form action="" method="POST">
-			<div class="section group">
-				<div class="box_left">
-					<div class="cartpage">
-						<table class="cart-table">
-							<thead>
-								<tr>
-									<th width="5%">ID</th>
-									<th width="15%">Tên sản phẩm</th>
-									<th width="15%">Giá</th>
-									<th width="25%">Số lượng</th>
-									<th width="20%">Tổng tiền</th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php
-								$get_product_cart = $ct->get_product_cart_checkout();
-								if ($get_product_cart) {
-									$subtotal = 0;
-									$qty = 0;
-									$i = 0;
-									while ($result = $get_product_cart->fetch_assoc()) {
-										$i++;
-								?>
-										<tr>
-											<td><?php echo $i ?></td>
-											<td><?php echo $result['productName'] ?></td>
-											<td><?php echo $fm->format_currency($result['price']) . ' VND' ?></td>
-											<td><?php echo $result['quantity'] ?></td>
-											<td><?php
-												$total = $result['price'] * $result['quantity'];
-												echo $fm->format_currency($total) . ' VND';
-												?></td>
-										</tr>
-								<?php
-										$subtotal += $total;
-										$qty += $result['quantity'];
-									}
+		<?php if (isset($message)) echo '<span class="message">' . $message . '</span>'; ?>
+		<div class="section group">
+			<div class="box_left">
+				<div class="cartpage">
+					<table class="cart-table">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Tên sản phẩm</th>
+								<th>Giá</th>
+								<th>Số lượng</th>
+								<th>Tổng tiền</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php
+							$get_cart_items = $ct->get_cart_items();
+							$subtotal = 0;
+							$qty = 0;
+							$i = 0;
+							if ($get_cart_items) {
+								while ($result = $get_cart_items->fetch_assoc()) {
+									$i++;
+									$total = $result['price'] * $result['quantity'];
+									$subtotal += $total;
+									$qty += $result['quantity'];
+							?>
+									<tr>
+										<td><?php echo $i ?></td>
+										<td><?php echo $result['product_name'] ?></td>
+										<td><?php echo $fm->format_currency($result['price']) . ' VND' ?></td>
+										<td><?php echo $result['quantity'] ?></td>
+										<td><?php echo $fm->format_currency($total) . ' VND' ?></td>
+									</tr>
+							<?php
 								}
-								?>
-							</tbody>
-						</table>
-						<?php
-						$check_cart = $ct->check_cart();
-						if ($check_cart) {
-						?>
-							<div class="cart-summary">
-								<table>
-									<tr>
-										<th>Tổng phụ:</th>
-										<td><?php echo $fm->format_currency($subtotal) . ' VND';
-											Session::set('sum', $subtotal);
-											Session::set('qty', $qty); ?></td>
-									</tr>
-									<tr>
-										<th>VAT:</th>
-										<td>10% (<?php echo $fm->format_currency($subtotal * 0.1) . ' VND'; ?>)</td>
-									</tr>
-									<tr>
-										<th>Tổng cộng:</th>
-										<td><?php $vat = $subtotal * 0.1;
-											echo $fm->format_currency($subtotal + $vat) . ' VND'; ?></td>
-									</tr>
-								</table>
-							</div>
-						<?php
-						} else {
-							echo '<p class="empty-cart">Giỏ hàng của bạn đang trống! Vui lòng mua sắm ngay!</p>';
-						}
-						?>
-					</div>
-				</div>
-				<div class="box_right">
-					<table class="customer-info">
-						<?php
-						$id = Session::get('customer_id');
-						$get_customers = $cs->getCustomerById($id);
-						if ($get_customers) {
-							while ($result = $get_customers->fetch_assoc()) {
-						?>
-								<tr>
-									<td>Họ tên</td>
-									<td>:</td>
-									<td><?php echo $result['name'] ?></td>
-								</tr>
-								<tr>
-									<td>Địa chỉ</td>
-									<td>:</td>
-									<td><?php echo $result['address'] ?></td>
-								</tr>
-								<tr>
-									<td>Thành phố</td>
-									<td>:</td>
-									<td><?php echo $result['city'] ?></td>
-								</tr>
-								<tr>
-									<td>Quốc gia</td>
-									<td>:</td>
-									<td><?php echo $result['country'] ?></td>
-								</tr>
-								<tr>
-									<td>Mã bưu điện</td>
-									<td>:</td>
-									<td><?php echo $result['zipcode'] ?></td>
-								</tr>
-								<tr>
-									<td>Số điện thoại</td>
-									<td>:</td>
-									<td><?php echo $result['phone'] ?></td>
-								</tr>
-								<tr>
-									<td>Email</td>
-									<td>:</td>
-									<td><?php echo $result['email'] ?></td>
-								</tr>
-								<tr>
-									<td colspan="3"><a href="editprofile.php" class="edit-link">Cập nhật thông tin</a></td>
-								</tr>
-						<?php
 							}
-						}
-						?>
+							?>
+						</tbody>
 					</table>
+					<?php if ($subtotal > 0) { ?>
+						<div class="cart-summary">
+							<table>
+								<tr>
+									<th>Tổng phụ:</th>
+									<td><?php echo $fm->format_currency($subtotal) . ' VND';
+										Session::set('sum', $subtotal);
+										Session::set('qty', $qty); ?></td>
+								</tr>
+								<tr>
+									<th>VAT:</th>
+									<td>10% (<?php echo $fm->format_currency($subtotal * 0.1) . ' VND'; ?>)</td>
+								</tr>
+								<tr>
+									<th>Tổng cộng:</th>
+									<td><?php echo $fm->format_currency($subtotal + $subtotal * 0.1) . ' VND'; ?></td>
+								</tr>
+							</table>
+						</div>
+					<?php } else { ?>
+						<p class="empty-cart">Giỏ hàng của bạn trống!</p>
+					<?php } ?>
 				</div>
 			</div>
-			<div class="order-btn-wrapper">
-				<a href="order.php" class="submit_order">Đặt hàng ngay</a>
+			<div class="box_right">
+				<table class="customer-info">
+					<?php
+					$id = Session::get('customer_id');
+					$cs = new Customer(); // Giả sử có class Customer
+					$get_customers = $cs->get_customer_by_id($id);
+					if ($get_customers) {
+						while ($result = $get_customers->fetch_assoc()) {
+					?>
+							<tr>
+								<td>Họ tên</td>
+								<td>:</td>
+								<td><?php echo $result['name'] ?></td>
+							</tr>
+							<tr>
+								<td>Địa chỉ</td>
+								<td>:</td>
+								<td><?php echo $result['address'] ?></td>
+							</tr>
+							<tr>
+								<td>Thành phố</td>
+								<td>:</td>
+								<td><?php echo $result['city'] ?></td>
+							</tr>
+							<tr>
+								<td>Quốc gia</td>
+								<td>:</td>
+								<td><?php echo $result['country'] ?></td>
+							</tr>
+							<tr>
+								<td>Mã bưu điện</td>
+								<td>:</td>
+								<td><?php echo $result['zipcode'] ?></td>
+							</tr>
+							<tr>
+								<td>Số điện thoại</td>
+								<td>:</td>
+								<td><?php echo $result['phone'] ?></td>
+							</tr>
+							<tr>
+								<td>Email</td>
+								<td>:</td>
+								<td><?php echo $result['email'] ?></td>
+							</tr>
+							<tr>
+								<td colspan="3"><a href="editprofile.php" class="edit-link">Cập nhật thông tin</a></td>
+							</tr>
+					<?php
+						}
+					}
+					?>
+				</table>
 			</div>
-		</form>
+		</div>
+		<div class="order-btn-wrapper">
+			<a href="?orderid=order" class="submit_order">Đặt hàng ngay</a>
+		</div>
 	</div>
 </div>
 
-<?php
-include 'inc/footer.php';
-?>
+<?php include 'inc/footer.php'; ?>
 
 <style>
 	.main {
@@ -163,6 +174,13 @@ include 'inc/footer.php';
 		font-size: 24px;
 		text-align: center;
 		margin-bottom: 20px;
+	}
+
+	.message {
+		display: block;
+		color: #ff3333;
+		text-align: center;
+		margin-bottom: 15px;
 	}
 
 	.section {

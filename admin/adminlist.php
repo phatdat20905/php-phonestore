@@ -1,6 +1,6 @@
-<?php include 'inc/header.php'; ?>
-<?php include 'inc/sidebar.php'; ?>
-<?php include '../classes/Admin.php'; ?>
+<?php include_once 'inc/header.php'; ?>
+<?php include_once 'inc/sidebar.php'; ?>
+<?php include_once '../classes/Admin.php'; ?>
 <?php
 $admin = new Admin();
 $message = '';
@@ -43,7 +43,7 @@ if (isset($_GET['delId'])) {
                             <td><?php echo $result['username']; ?></td>
                             <td><?php echo $result['name']; ?></td>
                             <td><?php echo $result['email']; ?></td>
-                            <td><?php echo $result['image'] ? '<img src="../uploads/' . $result['image'] . '" width="50">' : 'Không có'; ?></td>
+                            <td><img src="uploads/<?php echo $result['image']; ?>" alt="Admin Image" width="80"></td>
                             <td><?php echo $result['created_at']; ?></td>
                             <td>
                                 <a href="adminedit.php?admin_id=<?php echo $result['admin_id']; ?>" class="btn btn-edit"><i class="fas fa-edit"></i> Sửa</a>
@@ -58,4 +58,4 @@ if (isset($_GET['delId'])) {
         </table>
     </div>
 </div>
-<?php include 'inc/footer.php'; ?>
+<?php include_once 'inc/footer.php'; ?>

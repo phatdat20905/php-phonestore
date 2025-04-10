@@ -1,76 +1,69 @@
 <?php
-	include 'inc/header.php';
-	// include 'inc/slider.php';
+include 'inc/header.php';
+
+$login_check = Session::get('customer_login');
+if ($login_check == false) {
+	header('Location:login.php');
+	exit;
+}
 ?>
-<style type="text/css">
-	h2.success_order {
-		text-align: center;
-        font-size: 30px;
-        color: #333;
-        margin-bottom: 30px;
-        margin-top: 30px;
-        font-weight: bold;
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
-        margin-top: 20px;
-        padding-top: 10px;
-        padding-left: 15px;
-        padding-right: 15px;
-        background-color: #f7f7f7;
-        border-radius: 5px;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-	}
-	p.success_note {
-		text-align: center;
-        font-size: 18px;
-        color: #333;
-        margin-bottom: 30px;
-        margin-top: 30px;
-        font-weight: bold;
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
-        margin-top: 20px;
-        padding-top: 10px;
-        padding-left: 15px;
-        padding-right: 15px;
-        background-color: #f7f7f7;
-        border-radius: 5px;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-        cursor: pointer;
-        margin-bottom: 10px;
-	}
-</style>
-<form action="" method="POST">
-	<div class="main">
-		<div class="content">
-			<div class="section group">
-				<h2 class="success_order">Success Order</h2>
-				<?php
-				$customer_id = Session::get('customer_id');
-				$get_amount = $ct->getAmountPrice($customer_id);
-				if($get_amount) {
-					$amount = 0;
-					while($result = $get_amount->fetch_assoc()) {
-						$price = $result['price'];
-						$amount += $price; 
-					}
-				}
-				?>
-				<p class="success_note">Total Price You Have Bought From My Website: 
-					<?php
-						$vat = $amount * 0.1;
-						$total_amount = $amount + $vat;
-						echo $total_amount.' VND';
-					?>
-				</p>
-				<p class="success_note">We will contact as soon as possiable. Please see your order details here <a href="orderdetails.php">Click here</a></p>
-			</div>	
+
+<div class="main">
+	<div class="content">
+		<div class="cartpage">
+			<h3>Đặt hàng thành công!</h3>
+			<p>Cảm ơn bạn đã đặt hàng. Mã đơn hàng của bạn là:
+				<strong><?php echo isset($_GET['order_id']) ? 'ORD' . $_GET['order_id'] : 'N/A'; ?></strong>.
+				Bạn có thể xem chi tiết đơn hàng tại <a href="orderdetails.php">đây</a>.
+			</p>
+			<div class="shopping">
+				<a href="index.php" class="shop-btn">Tiếp tục mua sắm</a>
+			</div>
 		</div>
 	</div>
-</form>
-<?php 
-	include 'inc/footer.php';
-?>
-	
+</div>
+
+<?php include 'inc/footer.php'; ?>
+
+<style>
+	.main {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 40px 20px;
+	}
+
+	.cartpage {
+		background: #fff;
+		padding: 20px;
+		border-radius: 10px;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+		text-align: center;
+	}
+
+	h3 {
+		color: #4203a9;
+		font-size: 24px;
+		margin-bottom: 20px;
+	}
+
+	p {
+		color: #666;
+		font-size: 16px;
+	}
+
+	.shopping {
+		margin-top: 20px;
+	}
+
+	.shop-btn {
+		padding: 10px 20px;
+		background: #4203a9;
+		color: white;
+		text-decoration: none;
+		border-radius: 5px;
+	}
+
+	.shop-btn:hover {
+		background: #35028c;
+	}
+</style>

@@ -48,10 +48,10 @@ if (isset($_GET['approveId'])) {
                             <td><?php echo $result['customer_name']; ?></td>
                             <td><?php echo $result['content']; ?></td>
                             <td><?php echo $result['created_at']; ?></td>
-                            <td><?php echo $result['status'] == 0 ? 'Chưa duyệt' : 'Đã duyệt'; ?></td>
+                            <td><?php echo $result['status'] == 0 ? 'Ẩn' : 'Đã duyệt'; ?></td>
                             <td>
-                                <?php if ($result['status'] == 0): ?>
-                                    <a href="?approveId=<?php echo $result['comment_id']; ?>" class="btn btn-edit"><i class="fas fa-check"></i> Duyệt</a>
+                                <?php if ($result['status'] == 1): ?>
+                                    <a href="?approveId=<?php echo $result['comment_id']; ?>" class="btn btn-edit"><i class="fas fa-check"></i> Ẩn</a>
                                 <?php endif; ?>
                                 <a href="?delId=<?php echo $result['comment_id']; ?>" class="btn btn-delete"><i class="fas fa-trash"></i> Xóa</a>
                             </td>

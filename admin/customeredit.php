@@ -59,7 +59,7 @@ $result = $customer_data->fetch_assoc();
             </div>
             <div class="form-group">
                 <label for="image">Ảnh hiện tại:</label>
-                <?php echo $result['image'] ? '<img src="../uploads/' . $result['image'] . '" width="100">' : 'Không có'; ?><br>
+                <img src="uploads/<?php echo $result['image']; ?>" alt="Customer Image" width="80"><br>
                 <label for="image">Thay ảnh:</label>
                 <input type="file" id="image" name="image" accept="image/*">
                 <input type="hidden" name="current_image" value="<?php echo $result['image']; ?>">

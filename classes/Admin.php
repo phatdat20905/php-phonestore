@@ -4,6 +4,7 @@ include_once($filepath . '/../lib/Database.php');
 include_once($filepath . '/../lib/Session.php');
 include_once($filepath . '/../helpers/format.php');
 
+
 class Admin
 {
     private $db;
@@ -121,8 +122,7 @@ class Admin
 
     private function upload_image($file)
     {
-        if (empty($file['name'])) return null;
-        $target_dir = "../uploads/";
+        $target_dir = "uploads/";
         $file_name = time() . "_" . basename($file["name"]);
         $target_file = $target_dir . $file_name;
         move_uploaded_file($file["tmp_name"], $target_file);

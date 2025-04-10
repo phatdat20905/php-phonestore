@@ -25,7 +25,6 @@ if (isset($_GET['delId'])) {
                     <th>Sản phẩm</th>
                     <th>Khách hàng</th>
                     <th>Số sao</th>
-                    <th>Bình luận</th>
                     <th>Ngày đánh giá</th>
                     <th>Hành động</th>
                 </tr>
@@ -43,7 +42,6 @@ if (isset($_GET['delId'])) {
                             <td><?php echo $result['product_name']; ?></td>
                             <td><?php echo $result['customer_name']; ?></td>
                             <td><?php echo $result['rating']; ?> <i class="fas fa-star" style="color: #f39c12;"></i></td>
-                            <td><?php echo $result['comment'] ? $result['comment'] : 'Không có'; ?></td>
                             <td><?php echo $result['created_at']; ?></td>
                             <td>
                                 <a href="?delId=<?php echo $result['rating_id']; ?>" class="btn btn-delete" onclick="return confirm('Bạn có chắc muốn xóa?');"><i class="fas fa-trash"></i> Xóa</a>

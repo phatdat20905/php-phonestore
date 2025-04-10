@@ -32,9 +32,19 @@ class Comment
         return $this->db->select($query);
     }
 
+    public function show_approved_comments()
+    {
+        $query = "SELECT c.*, p.product_name, cu.name as customer_name 
+                  FROM comment c 
+                  JOIN product p ON c.product_id = p.product_id 
+                  JOIN customer cu ON c.customer_id = cu.customer_id 
+                  WHERE c.status = 1 
+                  ORDER BY c.created_at DESC";
+        return $this->db->select($query);
+    }
     public function approve_comment($id)
     {
-        $query = "UPDATE comment SET status = 1 WHERE comment_id = '$id'";
+        $query = "UPDATE comment SET status = 0 WHERE comment_id = '$id'";
         $result = $this->db->update($query);
         return ['success' => $result, 'message' => $result ? 'Duyệt thành công!' : 'Lỗi khi duyệt'];
     }
@@ -44,17 +54,5 @@ class Comment
         $query = "DELETE FROM comment WHERE comment_id = '$id'";
         $result = $this->db->delete($query);
         return ['success' => $result, 'message' => $result ? 'Xóa thành công!' : 'Lỗi khi xóa'];
-    }
-
-    public function show_customers()
-    {
-        $query = "SELECT * FROM customer ORDER BY created_at DESC";
-        return $this->db->select($query);
-    }
-
-    public function get_customer_by_id($id)
-    {
-        $query = "SELECT * FROM customer WHERE customer_id = '$id'";
-        return $this->db->select($query);
     }
 }

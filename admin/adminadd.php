@@ -1,6 +1,6 @@
-<?php include 'inc/header.php'; ?>
-<?php include 'inc/sidebar.php'; ?>
-<?php include '../classes/Admin.php'; ?>
+<?php include_once 'inc/header.php'; ?>
+<?php include_once 'inc/sidebar.php'; ?>
+<?php include_once '../classes/Admin.php'; ?>
 <?php
 $admin = new Admin();
 $message = '';
@@ -42,4 +42,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         </form>
     </div>
 </div>
-<?php include 'inc/footer.php'; ?>
+<?php include_once 'inc/footer.php'; ?>

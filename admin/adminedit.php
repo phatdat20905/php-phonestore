@@ -1,6 +1,6 @@
-<?php include 'inc/header.php'; ?>
-<?php include 'inc/sidebar.php'; ?>
-<?php include '../classes/Admin.php'; ?>
+<?php include_once 'inc/header.php'; ?>
+<?php include_once 'inc/sidebar.php'; ?>
+<?php include_once '../classes/Admin.php'; ?>
 <?php
 $admin = new Admin();
 if (!isset($_GET['admin_id']) || empty($_GET['admin_id'])) {
@@ -43,7 +43,7 @@ $result = $admin_data->fetch_assoc();
             </div>
             <div class="form-group">
                 <label for="image">Ảnh hiện tại:</label>
-                <?php echo $result['image'] ? '<img src="../uploads/' . $result['image'] . '" width="100">' : 'Không có'; ?><br>
+                <img src="uploads/<?php echo $result['image']; ?>" alt="Admin Image" width="80"><br>
                 <label for="image">Thay ảnh:</label>
                 <input type="file" id="image" name="image" accept="image/*">
                 <input type="hidden" name="current_image" value="<?php echo $result['image']; ?>">
@@ -52,4 +52,4 @@ $result = $admin_data->fetch_assoc();
         </form>
     </div>
 </div>
-<?php include 'inc/footer.php'; ?>
+<?php include_once 'inc/footer.php'; ?>

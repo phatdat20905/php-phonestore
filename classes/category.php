@@ -45,4 +45,10 @@ class Category
         $result = $this->db->delete($query);
         return ['success' => $result, 'message' => $result ? 'Xóa thành công!' : 'Lỗi khi xóa'];
     }
+
+    public function show_category_frontend()
+    {
+        $query = "SELECT * FROM category ORDER BY cat_id ASC";
+        return $this->db->select($query);
+    }
 }

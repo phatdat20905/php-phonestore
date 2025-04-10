@@ -1,4 +1,5 @@
 <?php
+$filepath = realpath(dirname(__FILE__));
 include '../classes/Admin.php';
 include_once($filepath . '/../lib/Session.php');
 Session::checkLogin();

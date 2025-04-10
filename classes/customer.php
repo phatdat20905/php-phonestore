@@ -32,6 +32,37 @@ class Customer
         return ['success' => $result, 'message' => $result ? 'Thêm thành công!' : 'Lỗi khi thêm khách hàng'];
     }
 
+    public function login_customer($data)
+    {
+        $email = $this->db->link->real_escape_string($this->fm->validation($data['email']));
+        $password = $this->fm->validation($data['password']);
+
+        if (empty($email) || empty($password)) {
+            return "Email và mật khẩu không được để trống!";
+        }
+        $query = "SELECT * FROM customer WHERE email = '$email' LIMIT 1";
+        $result = $this->db->select($query);
+        if ($result) {
+            $value = $result->fetch_assoc();
+            if (password_verify($password, $value['password'])) {
+                Session::set('customer_login', true);
+                Session::set('customer_id', $value['customer_id']);
+                Session::set('customer_name', $value['name']);
+                return "Đăng nhập thành công!";
+            } else {
+                return "Mật khẩu không đúng!";
+            }
+        } else {
+            return "Email không tồn tại!";
+        }
+    }
+
+    public function show_customers()
+    {
+        $query = "SELECT * FROM customer ORDER BY created_at DESC";
+        return $this->db->select($query);
+    }
+
     public function show_customer()
     {
         $query = "SELECT * FROM customer ORDER BY customer_id DESC";
@@ -85,8 +116,7 @@ class Customer
 
     private function upload_image($file)
     {
-        if (empty($file['name'])) return null;
-        $target_dir = "../uploads/";
+        $target_dir = "uploads/";
         $file_name = time() . "_" . basename($file["name"]);
         $target_file = $target_dir . $file_name;
         move_uploaded_file($file["tmp_name"], $target_file);

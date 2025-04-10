@@ -51,4 +51,10 @@ class Slider
         move_uploaded_file($file["tmp_name"], $target_file);
         return $file_name;
     }
+
+    public function get_active_sliders()
+    {
+        $query = "SELECT * FROM slider WHERE type = 1 ORDER BY slider_id DESC";
+        return $this->db->select($query);
+    }
 }

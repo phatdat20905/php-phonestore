@@ -99,4 +99,48 @@ class Product
                   LIMIT 10";
         return $this->db->select($query);
     }
+
+    public function get_featured_products()
+    {
+        $query = "SELECT p.*, i.quantity FROM product p 
+                  LEFT JOIN inventory i ON p.product_id = i.product_id 
+                  WHERE p.type = 1 LIMIT 4";
+        return $this->db->select($query);
+    }
+
+    public function get_new_products()
+    {
+        $query = "SELECT p.*, i.quantity FROM product p 
+                  LEFT JOIN inventory i ON p.product_id = i.product_id 
+                  ORDER BY p.product_id DESC LIMIT 4";
+        return $this->db->select($query);
+    }
+
+    public function get_all_product()
+    {
+        $query = "SELECT * FROM product";
+        return $this->db->select($query);
+    }
+
+    public function getLastestByBrand($brand_id)
+    {
+        $brand_id = $this->db->link->real_escape_string($brand_id);
+        $query = "SELECT p.*, i.quantity FROM product p 
+                  LEFT JOIN inventory i ON p.product_id = i.product_id 
+                  WHERE p.brand_id = '$brand_id' 
+                  ORDER BY p.product_id DESC LIMIT 1";
+        return $this->db->select($query);
+    }
+
+    public function get_product_details($id)
+    {
+        $id = $this->db->link->real_escape_string($id);
+        $query = "SELECT p.*, c.cat_name, b.brand_name, i.quantity 
+                  FROM product p 
+                  LEFT JOIN category c ON p.cat_id = c.cat_id 
+                  LEFT JOIN brand b ON p.brand_id = b.brand_id 
+                  LEFT JOIN inventory i ON p.product_id = i.product_id 
+                  WHERE p.product_id = '$id'";
+        return $this->db->select($query);
+    }
 }

@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                     <option value="">Chọn khách hàng</option>
                     <?php
                     $customer = new Customer();
-                    $customerlist = $customer->show_customer();
+                    $customerlist = $customer->show_customers();
                     if ($customerlist) {
                         while ($result = $customerlist->fetch_assoc()) {
                     ?>
@@ -68,10 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                     <option value="4">4 sao</option>
                     <option value="5">5 sao</option>
                 </select>
-            </div>
-            <div class="form-group">
-                <label for="comment">Bình luận:</label>
-                <textarea id="comment" name="comment" placeholder="Nhập bình luận..." rows="4"></textarea>
             </div>
             <button type="submit" name="submit" class="btn"><i class="fas fa-save"></i> Lưu</button>
         </form>

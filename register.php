@@ -12,41 +12,73 @@ if ($login_check == true) {
 
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    $insertCustomer = $cs->insert_customer($_POST);
+    $insertCustomer = $cs->insert_customer($_POST, $_FILES);
 }
 ?>
 
 <div class="main">
     <div class="content">
-        <div class="register_account">
-            <h3>Đăng ký tài khoản mới</h3>
+        <div class="register-container">
+            <h2>Đăng ký tài khoản mới</h2>
             <?php
             if (isset($insertCustomer)) {
-                echo '<span class="error-message">' . $insertCustomer . '</span>';
+                $class = $insertCustomer['success'] ? 'success' : '';
+                echo '<span class="message ' . $class . '">' . $insertCustomer['message'] . '</span>';
+                if ($insertCustomer['success']) {
+                    echo "<script>window.location='login.php';</script>";
+                }
             }
             ?>
-            <form action="" method="POST">
-                <div class="form-grid">
-                    <div class="form-column">
-                        <input type="text" name="name" placeholder="Nhập Họ tên...">
-                        <input type="text" name="city" placeholder="Nhập Thành phố...">
-                        <input type="text" name="zipcode" placeholder="Nhập Mã bưu điện...">
-                        <input type="text" name="email" placeholder="Nhập Email...">
+            <form action="" method="POST" enctype="multipart/form-data">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Họ tên <span class="required">*</span></label>
+                        <input type="text" id="name" name="name" placeholder="Nhập họ tên..." required>
                     </div>
-                    <div class="form-column">
-                        <input type="text" name="address" placeholder="Nhập Địa chỉ...">
-                        <select id="country" name="country">
-                            <option value="null">Chọn Quốc gia</option>
+                    <div class="form-group">
+                        <label for="email">Email <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" placeholder="Nhập email..." required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại <span class="required">*</span></label>
+                        <input type="text" id="phone" name="phone" placeholder="Nhập số điện thoại..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Mật khẩu <span class="required">*</span></label>
+                        <input type="password" id="password" name="password" placeholder="Nhập mật khẩu..." required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="address">Địa chỉ <span class="required">*</span></label>
+                        <input type="text" id="address" name="address" placeholder="Nhập địa chỉ..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">Thành phố <span class="required">*</span></label>
+                        <input type="text" id="city" name="city" placeholder="Nhập thành phố..." required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="zipcode">Mã bưu điện</label>
+                        <input type="text" id="zipcode" name="zipcode" placeholder="Nhập mã bưu điện...">
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Quốc gia <span class="required">*</span></label>
+                        <select id="country" name="country" required>
+                            <option value="">Chọn quốc gia</option>
                             <option value="VN">Việt Nam</option>
                             <!-- Thêm các quốc gia khác nếu cần -->
                         </select>
-                        <input type="text" name="phone" placeholder="Nhập Số điện thoại...">
-                        <input type="text" name="password" placeholder="Nhập Mật khẩu...">
                     </div>
                 </div>
-                <div class="search">
-                    <input type="submit" class="submit-btn" name="submit" value="Tạo tài khoản">
+                <div class="form-group full-width">
+                    <label for="image">Ảnh đại diện</label>
+                    <input type="file" id="image" name="image" accept="image/*">
                 </div>
+                <button type="submit" name="submit" class="submit-btn">Tạo tài khoản</button>
                 <p class="login-link">Đã có tài khoản? <a href="login.php">Đăng nhập tại đây</a></p>
             </form>
         </div>
@@ -57,11 +89,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 include 'inc/footer.php';
 ?>
 
-<style>
+<style type="text/css">
     .main {
         max-width: 1200px;
         margin: 0 auto;
         padding: 40px 20px;
+        background: #f9f9f9;
+        min-height: calc(100vh - 200px);
+        /* Đảm bảo chiều cao tối thiểu */
     }
 
     .content {
@@ -69,98 +104,113 @@ include 'inc/footer.php';
         justify-content: center;
     }
 
-    .register_account {
+    .register-container {
         background: #fff;
         padding: 30px;
         border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         width: 100%;
-        max-width: 750px;
+        max-width: 700px;
     }
 
-    h3 {
-        color: #4203a9;
-        font-size: 24px;
-        margin-bottom: 15px;
+    h2 {
+        font-size: 28px;
+        color: #333;
         text-align: center;
+        margin-bottom: 20px;
+        font-family: 'Monda', sans-serif;
     }
 
-    .error-message {
+    .message {
         display: block;
-        color: #ff3333;
         font-size: 14px;
-        margin-bottom: 15px;
         text-align: center;
+        margin-bottom: 20px;
+        color: #ff3333;
     }
 
-    input[type="text"],
-    input[type="password"] {
+    .message.success {
+        color: #28a745;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        flex: 1;
+    }
+
+    .form-group.full-width {
+        flex: none;
         width: 100%;
-        padding: 12px 15px;
-        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .form-group .required {
+        color: #ff3333;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 90%;
+        padding: 12px;
         border: 1px solid #ddd;
         border-radius: 5px;
         font-size: 16px;
-        transition: border-color 0.3s ease;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    input:focus {
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: #ff6600;
+        box-shadow: 0 0 5px rgba(255, 102, 0, 0.3);
         outline: none;
-        border-color: #4203a9;
     }
 
-    select {
-        width: 100%;
-        padding: 12px 15px;
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 16px;
-        background: #fff;
+    .form-group input[type="file"] {
+        padding: 8px;
+        border: 1px dashed #ddd;
+        background: #fafafa;
     }
 
     .submit-btn {
         width: 100%;
         padding: 12px;
-        background: #4203a9;
+        background: #ff6600;
         border: none;
         border-radius: 5px;
-        color: white;
+        color: #fff;
         font-size: 16px;
         cursor: pointer;
         transition: background 0.3s ease;
+        margin-top: 20px;
     }
 
     .submit-btn:hover {
-        background: #35028c;
-    }
-
-    .search {
-        margin-top: 20px;
-        text-align: center;
-    }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-    }
-
-    .form-column {
-        display: flex;
-        flex-direction: column;
+        background: #e65c00;
     }
 
     .login-link {
-        margin-top: 20px;
         text-align: center;
-        color: #666;
+        margin-top: 20px;
         font-size: 14px;
+        color: #666;
     }
 
     .login-link a {
-        color: #4203a9;
+        color: #ff6600;
         text-decoration: none;
+        font-weight: bold;
     }
 
     .login-link a:hover {
@@ -168,8 +218,13 @@ include 'inc/footer.php';
     }
 
     @media (max-width: 768px) {
-        .form-grid {
-            grid-template-columns: 1fr;
+        .form-row {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .register-container {
+            padding: 20px;
         }
     }
 </style>

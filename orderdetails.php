@@ -1,18 +1,33 @@
 <?php
 include 'inc/header.php';
-// include 'inc/slider.php';
-?>
 
-<?php
 $login_check = Session::get('customer_login');
 if ($login_check == false) {
 	header('Location:login.php');
+	exit;
 }
+
+$order = new Order();
+
 if (isset($_GET['confirmid'])) {
-	$id = $_GET['confirmid'];
-	$time = $_GET['time'];
-	$price = $_GET['price'];
-	$shifted_confirm = $ct->shifted_confirm($id, $time, $price);
+	$customer_id = $_GET['confirmid'];
+	$order_id = $_GET['orderid'];
+	$result = $order->update_status($order_id, 2); // Status 2 = Đã nhận
+	if ($result['success']) {
+		$message = "Xác nhận nhận hàng thành công!";
+	} else {
+		$message = $result['message'];
+	}
+}
+
+if (isset($_GET['cancelid'])) {
+	$order_id = $_GET['cancelid'];
+	$result = $order->cancel_order($order_id); // Khách hủy đơn hàng
+	if ($result['success']) {
+		$message = "Hủy đơn hàng thành công!";
+	} else {
+		$message = $result['message'];
+	}
 }
 ?>
 
@@ -20,15 +35,17 @@ if (isset($_GET['confirmid'])) {
 	<div class="content">
 		<div class="cartpage">
 			<h3>Chi tiết đơn hàng của bạn</h3>
+			<?php if (isset($message)) echo '<span class="message">' . $message . '</span>'; ?>
 			<table class="order-table">
 				<thead>
 					<tr>
-						<th width="10%">STT</th>
+						<th width="5%">STT</th>
 						<th width="20%">Tên sản phẩm</th>
 						<th width="10%">Hình ảnh</th>
 						<th width="15%">Giá</th>
-						<th width="15%">Số lượng</th>
-						<th width="10%">Ngày đặt</th>
+						<th width="10%">Số lượng</th>
+						<th width="15%">Ngày đặt</th>
+						<th width="15%">Mã đơn hàng</th>
 						<th width="10%">Trạng thái</th>
 						<th width="10%">Hành động</th>
 					</tr>
@@ -36,37 +53,43 @@ if (isset($_GET['confirmid'])) {
 				<tbody>
 					<?php
 					$customer_id = Session::get('customer_id');
-					$get_cart_ordered = $ct->get_cart_ordered($customer_id);
-					if ($get_cart_ordered) {
+					$get_orders = $order->get_orders_by_customer($customer_id);
+					if ($get_orders) {
 						$i = 0;
-						while ($result = $get_cart_ordered->fetch_assoc()) {
+						while ($result = $get_orders->fetch_assoc()) {
 							$i++;
 					?>
 							<tr>
 								<td><?php echo $i ?></td>
-								<td><?php echo $result['productName'] ?></td>
+								<td><?php echo $result['product_name'] ?></td>
 								<td><img src="admin/uploads/<?php echo $result['image'] ?>" alt="Ảnh sản phẩm" /></td>
 								<td><?php echo $fm->format_currency($result['price']) . ' VND' ?></td>
 								<td><?php echo $result['quantity'] ?></td>
-								<td><?php echo $fm->formatDate($result['date_order']) ?></td>
+								<td><?php echo $fm->formatDate($result['created_at']) ?></td>
+								<td><?php echo $result['order_code'] ?></td>
 								<td>
 									<?php
 									if ($result['status'] == 0) echo "Đang xử lý";
-									elseif ($result['status'] == 1) echo "Đã giao";
+									elseif ($result['status'] == 1) echo "Đang giao";
 									elseif ($result['status'] == 2) echo "Đã nhận";
 									?>
 								</td>
 								<td>
 									<?php
-									if ($result['status'] == 0) echo "N/A";
-									elseif ($result['status'] == 1) {
-										echo '<a href="?confirmid=' . $customer_id . '&price=' . $result['price'] . '&time=' . $result['date_order'] . '" class="action-link">Xác nhận</a>';
-									} elseif ($result['status'] == 2) echo "Đã nhận";
+									if ($result['status'] == 0) {
+										echo '<a href="?cancelid=' . $result['order_id'] . '" class="cancel-link" onclick="return confirm(\'Bạn có chắc muốn hủy đơn hàng ' . $result['order_code'] . ' không?\')">Hủy</a>';
+									} elseif ($result['status'] == 1) {
+										echo '<a href="?confirmid=' . $customer_id . '&orderid=' . $result['order_id'] . '" class="action-link">Đã nhận</a>';
+									} elseif ($result['status'] == 2) {
+										echo "Đã nhận";
+									}
 									?>
 								</td>
 							</tr>
 					<?php
 						}
+					} else {
+						echo '<tr><td colspan="9">Bạn chưa có đơn hàng nào!</td></tr>';
 					}
 					?>
 				</tbody>
@@ -101,6 +124,13 @@ if (isset($_GET['confirmid'])) {
 		margin-bottom: 20px;
 	}
 
+	.message {
+		display: block;
+		color: #ff3333;
+		text-align: center;
+		margin-bottom: 15px;
+	}
+
 	.order-table {
 		width: 100%;
 		border-collapse: collapse;
@@ -132,15 +162,21 @@ if (isset($_GET['confirmid'])) {
 		text-decoration: underline;
 	}
 
+	.cancel-link {
+		color: #ff3333;
+		text-decoration: none;
+	}
+
+	.cancel-link:hover {
+		text-decoration: underline;
+	}
+
 	.shopping {
 		margin-top: 20px;
 		text-align: center;
 	}
 
 	.shop-btn {
-		display: inline-flex;
-		align-items: center;
-		gap: 10px;
 		padding: 10px 20px;
 		background: #4203a9;
 		color: white;
@@ -150,10 +186,5 @@ if (isset($_GET['confirmid'])) {
 
 	.shop-btn:hover {
 		background: #35028c;
-	}
-
-	.shop-btn img {
-		width: 20px;
-		height: auto;
 	}
 </style>

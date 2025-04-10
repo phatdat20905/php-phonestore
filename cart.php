@@ -1,20 +1,19 @@
 <?php
 include 'inc/header.php';
-// include 'inc/slider.php';
-?>
 
-<?php
 $login_check = Session::get('customer_login');
 if ($login_check == false) {
 	header('Location:login.php');
+	exit;
 }
-?>
 
-<?php
+$ct = new Cart();
+
 if (isset($_GET['cartid'])) {
 	$cartId = $_GET['cartid'];
 	$delcart = $ct->delete_product_cart($cartId);
 }
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 	$cartId = $_POST['cartId'];
 	$stock = $_POST['stock'];
@@ -24,9 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 		$delcart = $ct->delete_product_cart($cartId);
 	}
 }
-?>
 
-<?php
 if (!isset($_GET['id'])) {
 	echo "<meta http-equiv='refresh' content='0;URL=?id=live'>";
 }
@@ -49,31 +46,28 @@ if (!isset($_GET['id'])) {
 					<thead>
 						<tr>
 							<th width="20%">Tên sản phẩm</th>
-							<th width="20%">Tồn kho</th>
-							<th width="10%">Hình ảnh</th>
+							<th width="20%">Hình ảnh</th>
 							<th width="15%">Giá</th>
-							<th width="25%">Số lượng</th>
+							<th width="20%">Số lượng</th>
 							<th width="20%">Tổng tiền</th>
-							<th width="10%">Mua</th>
-							<th width="10%">Hành động</th>
+							<th width="5%">Hành động</th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php
-						$get_product_cart = $ct->get_product_cart();
+						$get_product_cart = $ct->get_cart_items();
 						if ($get_product_cart) {
 							$subtotal = 0;
 							$qty = 0;
 							while ($result = $get_product_cart->fetch_assoc()) {
 						?>
 								<tr>
-									<td><?php echo $result['productName'] ?></td>
-									<td><?php echo $result['stock'] ?></td>
+									<td><?php echo $result['product_name'] ?></td>
 									<td><img src="admin/uploads/<?php echo $result['image'] ?>" alt="Ảnh sản phẩm" /></td>
 									<td><?php echo $fm->format_currency($result['price']) . ' VND' ?></td>
 									<td>
 										<form action="" method="post">
-											<input type="hidden" name="cartId" value="<?php echo $result['cartId'] ?>" />
+											<input type="hidden" name="cartId" value="<?php echo $result['cart_id'] ?>" />
 											<input type="hidden" name="stock" value="<?php echo $result['stock'] ?>" />
 											<input type="number" name="quantity" min="0" value="<?php echo $result['quantity'] ?>" />
 											<input type="submit" name="submit" value="Cập nhật" class="update-btn" />
@@ -83,12 +77,8 @@ if (!isset($_GET['id'])) {
 										$total = $result['price'] * $result['quantity'];
 										echo $fm->format_currency($total) . ' VND';
 										?></td>
-									<td>
-										<input type="checkbox" <?php echo $result['status'] == 1 ? 'checked' : '' ?>
-											class="buy_checked" name="buy" value="<?php echo $result['cartId'] ?>">
-									</td>
-									<td><a onclick="return confirm('Bạn có chắc muốn xóa <?php echo $result['productName'] ?> không?')"
-											href="?cartid=<?php echo $result['cartId'] ?>" class="delete-link">Xóa</a></td>
+									<td><a onclick="return confirm('Bạn có chắc muốn xóa <?php echo $result['product_name'] ?> không?')"
+											href="?cartid=<?php echo $result['cart_id'] ?>" class="delete-link">Xóa</a></td>
 								</tr>
 						<?php
 								$subtotal += $total;
@@ -122,15 +112,16 @@ if (!isset($_GET['id'])) {
 							</tr>
 						</table>
 					</div>
+					<div class="shopping">
+						<a href="index.php" class="shop-btn">Tiếp tục mua sắm</a>
+						<a href="order.php" class="check-btn">Đặt hàng</a>
+					</div>
 				<?php
 				} else {
 					echo '<p class="empty-cart">Giỏ hàng của bạn đang trống! Vui lòng mua sắm ngay!</p>';
+					echo '<div class="shopping"><a href="index.php" class="shop-btn">Mua sắm ngay</a></div>';
 				}
 				?>
-			</div>
-			<div class="shopping">
-				<a href="index.php" class="shop-btn">Tiếp tục mua sắm</a>
-				<a href="payment.php" class="check-btn">Thanh toán</a>
 			</div>
 		</div>
 	</div>
@@ -239,7 +230,7 @@ include 'inc/footer.php';
 	.shopping {
 		display: flex;
 		justify-content: space-between;
-		margin-top: 20px;
+		margin-top: 100px;
 	}
 
 	.shop-btn,
@@ -257,10 +248,5 @@ include 'inc/footer.php';
 	.shop-btn:hover,
 	.check-btn:hover {
 		background: #35028c;
-	}
-
-	.shopping img {
-		width: 20px;
-		height: auto;
 	}
 </style>

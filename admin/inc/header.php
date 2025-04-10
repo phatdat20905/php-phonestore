@@ -1,6 +1,12 @@
 <?php
 include '../lib/session.php';
 Session::checkSession();
+include '../classes/Admin.php';
+
+$admin = new Admin();
+$adminId = Session::get('adminId');
+$admin_data = $admin->get_admin_by_id($adminId);
+$result = $admin_data->fetch_assoc();
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -32,7 +38,7 @@ Session::checkSession();
                 </div>
             </div>
             <div class="header-right">
-                <img src="img/img-profile.jpg" alt="Profile" class="profile-pic">
+                <img src="uploads/<?php echo $result['image']; ?>" alt="Profile" class="profile-pic" />
                 <span>Xin chào, <?php echo Session::get('adminName'); ?></span>
                 <a href="?action=logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                 <?php
@@ -47,7 +53,7 @@ Session::checkSession();
         <div class="container">
             <ul class="nav-list">
                 <li><a href="index.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="inbox.php"><i class="fas fa-inbox"></i> Inbox</a></li>
+                <li><a href="orderlist.php"><i class="fas fa-inbox"></i> Danh Sách đơn hàng</a></li>
                 <li><a href="changepassword.php"><i class="fas fa-key"></i> Đổi mật khẩu</a></li>
                 <li><a href="../index.php" target="_blank"><i class="fas fa-globe"></i> Xem website</a></li>
             </ul>

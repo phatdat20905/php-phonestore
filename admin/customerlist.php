@@ -33,7 +33,7 @@ if (isset($_GET['delId'])) {
             </thead>
             <tbody>
                 <?php
-                $customerlist = $customer->show_customer();
+                $customerlist = $customer->show_customers();
                 if ($customerlist) {
                     $i = 0;
                     while ($result = $customerlist->fetch_assoc()) {
@@ -45,7 +45,7 @@ if (isset($_GET['delId'])) {
                             <td><?php echo $result['email']; ?></td>
                             <td><?php echo $result['phone']; ?></td>
                             <td><?php echo $result['address']; ?></td>
-                            <td><?php echo $result['image'] ? '<img src="../uploads/' . $result['image'] . '" width="50">' : 'Không có'; ?></td>
+                            <td><img src="uploads/<?php echo $result['image']; ?>" alt="Customer Image" width="80"></td>
                             <td><?php echo $result['created_at']; ?></td>
                             <td>
                                 <a href="customeredit.php?customer_id=<?php echo $result['customer_id']; ?>" class="btn btn-edit"><i class="fas fa-edit"></i> Sửa</a>

@@ -1,0 +1,162 @@
+.listview_1_of_2.images_1_of_2{
+min-height: 150px !important;
+}
+
+/* CSS tùy chỉnh cho header và navbar */
+.header_top {
+    padding: 10px 0;
+}
+
+.logo img {
+    max-height: 100px;
+}
+
+.header_top_right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.search_box input[type="text"] {
+    padding: 8px;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+}
+
+.search_box input[type="submit"] {
+    padding: 8px 15px;
+    background: #ff6600;
+    color: #fff;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.shopping_cart .cart {
+    position: relative;
+}
+
+.cart_title {
+    font-weight: bold;
+}
+
+.no_product {
+    font-size: 12px;
+    color: #666;
+}
+
+.login_customer a {
+    padding: 8px 15px;
+    background: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    border: unset;
+}
+
+.login_customer a:hover {
+    background: #ff6600;
+}
+
+/* Navbar CSS */
+.menu {
+    background: #333;
+    padding: 10px 0;
+}
+
+.navbar {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.navbar li {
+    position: relative;
+}
+
+.navbar li a {
+    color: #fff;
+    text-decoration: none;
+    padding: 15px 20px;
+    display: block;
+    font-family: 'Monda', sans-serif;
+}
+
+.navbar li:hover>a {
+    background: #ff6600;
+}
+
+.navbar .dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    list-style: none;
+    padding: 0;
+    z-index: 1000;
+}
+
+.navbar li:hover .dropdown {
+    display: block;
+}
+
+.navbar .dropdown li a {
+    color: #333;
+    padding: 10px 15px;
+    font-size: 14px;
+}
+
+.navbar .dropdown li a:hover {
+    background: #f5f5f5;
+    color: #ff6600;
+}
+
+
+
+/* CSS tùy chỉnh cho index.php */
+
+.grid_1_of_4 input[type="number"] {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.grid_1_of_4 input[type="submit"].button {
+    background: #ff6600;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.grid_1_of_4 input[type="submit"].button:hover {
+    background: #e65c00;
+}
+
+.grid_1_of_4 .button a.details {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+.grid_1_of_4 .button a.details:hover {
+    background: #ff6600;
+}
+
+/* details.php */
+.product-desc h2, .product-tags h2, .buysubmit {
+ background-color: #ff6600;
+}

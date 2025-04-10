@@ -19,16 +19,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 <div class="main">
 	<div class="content">
 		<div class="login_panel">
-			<h3>Khách hàng hiện tại</h3>
+			<h3>Đăng nhập</h3>
 			<p>Đăng nhập bằng biểu mẫu dưới đây.</p>
 			<?php
 			if (isset($loginCustomer)) {
-				echo '<span class="error-message">' . $loginCustomer . '</span>';
+				$class = ($loginCustomer === "Đăng nhập thành công!") ? 'success' : '';
+				echo '<span class="message ' . $class . '">' . $loginCustomer . '</span>';
+				if ($loginCustomer === "Đăng nhập thành công!") {
+					echo "<script>window.location='index.php';</script>";
+				}
 			}
 			?>
 			<form action="" method="POST">
-				<input name="email" type="text" class="field" placeholder="Nhập Email...">
-				<input name="password" type="password" class="field" placeholder="Nhập Mật khẩu...">
+				<input name="email" type="text" class="field" placeholder="Nhập Email..." required>
+				<input name="password" type="password" class="field" placeholder="Nhập Mật khẩu..." required>
 				<div class="buttons">
 					<input type="submit" class="submit-btn" name="login" value="Đăng nhập">
 				</div>
@@ -42,11 +46,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 include 'inc/footer.php';
 ?>
 
-<style>
+<style type="text/css">
 	.main {
 		max-width: 1200px;
 		margin: 0 auto;
 		padding: 40px 20px;
+		background: #f9f9f9;
 	}
 
 	.content {
@@ -57,17 +62,18 @@ include 'inc/footer.php';
 	.login_panel {
 		background: #fff;
 		padding: 30px;
-		border-radius: 10px;
-		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+		border-radius: 8px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 		width: 100%;
 		max-width: 400px;
 	}
 
 	h3 {
-		color: #4203a9;
-		font-size: 24px;
+		font-size: 28px;
+		color: #333;
 		margin-bottom: 15px;
 		text-align: center;
+		font-family: 'Monda', sans-serif;
 	}
 
 	p {
@@ -77,57 +83,63 @@ include 'inc/footer.php';
 		text-align: center;
 	}
 
-	.error-message {
+	.message {
 		display: block;
-		color: #ff3333;
 		font-size: 14px;
 		margin-bottom: 15px;
 		text-align: center;
+		color: #ff3333;
+	}
+
+	.message.success {
+		color: #28a745;
 	}
 
 	.field {
 		width: 100%;
-		padding: 12px 15px;
+		padding: 12px;
 		margin-bottom: 15px;
 		border: 1px solid #ddd;
 		border-radius: 5px;
 		font-size: 16px;
-		transition: border-color 0.3s ease;
+		transition: border-color 0.3s ease, box-shadow 0.3s ease;
 	}
 
 	.field:focus {
+		border-color: #ff6600;
+		box-shadow: 0 0 5px rgba(255, 102, 0, 0.3);
 		outline: none;
-		border-color: #4203a9;
 	}
 
 	.submit-btn {
 		width: 100%;
 		padding: 12px;
-		background: #4203a9;
+		background: #ff6600;
 		border: none;
 		border-radius: 5px;
-		color: white;
+		color: #fff;
 		font-size: 16px;
 		cursor: pointer;
 		transition: background 0.3s ease;
 	}
 
 	.submit-btn:hover {
-		background: #35028c;
+		background: #e65c00;
 	}
 
 	.buttons {
 		margin-top: 20px;
-		text-align: center;
 	}
 
 	.register-link {
 		margin-top: 20px;
+		text-align: center;
 	}
 
 	.register-link a {
-		color: #4203a9;
+		color: #ff6600;
 		text-decoration: none;
+		font-weight: bold;
 	}
 
 	.register-link a:hover {

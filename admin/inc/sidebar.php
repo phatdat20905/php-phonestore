@@ -45,7 +45,25 @@
         <li>
             <a href="#" class="menu-item"><i class="fas fa-shopping-cart"></i> Đơn hàng</a>
             <ul class="submenu">
-                <li><a href="inbox.php">Danh sách đơn hàng</a></li>
+                <li><a href="orderlist.php">Danh sách đơn hàng</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#" class="menu-item"><i class="fas fa-shopping-cart"></i> Quản lý giỏ hàng</a>
+            <ul class="submenu">
+                <li><a href="admin_cart.php">Danh sách giỏ hàng</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#" class="menu-item"><i class="fas fa-balance-scale"></i> Quản lý so sánh</a>
+            <ul class="submenu">
+                <li><a href="admin_compare.php">Danh sách so sánh</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#" class="menu-item"><i class="fas fa-heart"></i> Quản lý yêu thích</a>
+            <ul class="submenu">
+                <li><a href="admin_wishlist.php">Danh sách yêu thích</a></li>
             </ul>
         </li>
         <li>
