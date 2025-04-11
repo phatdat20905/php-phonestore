@@ -14,7 +14,7 @@ if ($login_check == false) {
 			<h3>Đặt hàng thành công!</h3>
 			<p>Cảm ơn bạn đã đặt hàng. Mã đơn hàng của bạn là:
 				<strong><?php echo isset($_GET['order_id']) ? 'ORD' . $_GET['order_id'] : 'N/A'; ?></strong>.
-				Bạn có thể xem chi tiết đơn hàng tại <a href="orderdetails.php">đây</a>.
+				Bạn có thể xem chi tiết đơn hàng tại <a href="orderdetails.php?orderid=<?php echo $_GET['order_id']; ?>">đây</a>.
 			</p>
 			<div class="shopping">
 				<a href="index.php" class="shop-btn">Tiếp tục mua sắm</a>

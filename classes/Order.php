@@ -2,14 +2,16 @@
 $filepath = realpath(dirname(__FILE__));
 include_once($filepath . '/../lib/Database.php');
 include_once($filepath . '/../lib/Session.php');
-
+include_once($filepath . '/../helpers/format.php');
 class Order
 {
     private $db;
+    private $fm;
 
     public function __construct()
     {
         $this->db = new Database();
+        $this->fm = new Format();
     }
 
     public function insert_order($customer_id, $products)
@@ -74,6 +76,16 @@ class Order
                   JOIN product p ON od.product_id = p.product_id 
                   WHERE o.customer_id = '$customer_id' 
                   ORDER BY o.created_at DESC";
+        return $this->db->select($query);
+    }
+
+    public function get_order_by_id_and_customer($order_id, $customer_id)
+    {
+        $order_id = $this->db->link->real_escape_string($this->fm->validation($order_id));
+        $customer_id = $this->db->link->real_escape_string($this->fm->validation($customer_id));
+        $query = "SELECT o.* 
+                  FROM `order` o 
+                  WHERE o.order_id = '$order_id' AND o.customer_id = '$customer_id'";
         return $this->db->select($query);
     }
 
@@ -148,12 +160,6 @@ class Order
         return $result ? $result->fetch_assoc()['total'] : 0;
     }
 
-    public function get_total_revenue()
-    {
-        $query = "SELECT SUM(total) as revenue FROM `order` WHERE status = 2";
-        $result = $this->db->select($query);
-        return $result ? $result->fetch_assoc()['revenue'] : 0;
-    }
 
     private function generate_order_code()
     {
@@ -169,13 +175,41 @@ class Order
         return $total + ($total * 0.1); // Cộng VAT 10%
     }
 
+
+    public function get_total_revenue()
+    {
+        $query = "SELECT SUM(total) as revenue FROM `order` WHERE status = 3"; // Chỉ tính status = 3 (Thành công)
+        $result = $this->db->select($query);
+        return $result ? $result->fetch_assoc()['revenue'] : 0;
+    }
+
+    public function get_revenue_by_day()
+    {
+        $query = "SELECT DATE(created_at) as day, SUM(total) as total 
+                  FROM `order` 
+                  WHERE status = 3 
+                  GROUP BY DATE(created_at) 
+                  ORDER BY day DESC";
+        return $this->db->select($query);
+    }
+
     public function get_revenue_by_month()
     {
-        $query = "SELECT DATE_FORMAT(`created_at`, '%Y-%m') AS month, SUM(`total`) AS total 
+        $query = "SELECT DATE_FORMAT(created_at, '%Y-%m') as month, SUM(total) as total 
                   FROM `order` 
-                  WHERE `status` = 2 
-                  GROUP BY DATE_FORMAT(`created_at`, '%Y-%m') 
+                  WHERE status = 3 
+                  GROUP BY DATE_FORMAT(created_at, '%Y-%m') 
                   ORDER BY month DESC";
+        return $this->db->select($query);
+    }
+
+    public function get_revenue_by_year()
+    {
+        $query = "SELECT YEAR(created_at) as year, SUM(total) as total 
+                  FROM `order` 
+                  WHERE status = 3 
+                  GROUP BY YEAR(created_at) 
+                  ORDER BY year DESC";
         return $this->db->select($query);
     }
 

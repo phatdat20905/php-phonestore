@@ -128,4 +128,41 @@ class Admin
         move_uploaded_file($file["tmp_name"], $target_file);
         return $file_name;
     }
+
+    public function get_total_revenue()
+    {
+        $query = "SELECT SUM(total) as revenue FROM `order` WHERE status = 3"; // Chỉ tính status = 3 (Thành công)
+        $result = $this->db->select($query);
+        return $result ? $result->fetch_assoc()['revenue'] : 0;
+    }
+
+    public function get_revenue_by_day()
+    {
+        $query = "SELECT DATE(created_at) as day, SUM(total) as total 
+                  FROM `order` 
+                  WHERE status = 3 
+                  GROUP BY DATE(created_at) 
+                  ORDER BY day DESC";
+        return $this->db->select($query);
+    }
+
+    public function get_revenue_by_month()
+    {
+        $query = "SELECT DATE_FORMAT(created_at, '%Y-%m') as month, SUM(total) as total 
+                  FROM `order` 
+                  WHERE status = 3 
+                  GROUP BY DATE_FORMAT(created_at, '%Y-%m') 
+                  ORDER BY month DESC";
+        return $this->db->select($query);
+    }
+
+    public function get_revenue_by_year()
+    {
+        $query = "SELECT YEAR(created_at) as year, SUM(total) as total 
+                  FROM `order` 
+                  WHERE status = 3 
+                  GROUP BY YEAR(created_at) 
+                  ORDER BY year DESC";
+        return $this->db->select($query);
+    }
 }

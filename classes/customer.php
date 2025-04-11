@@ -76,6 +76,14 @@ class Customer
         return $this->db->select($query);
     }
 
+
+    public function get_total_customers()
+    {
+        $query = "SELECT COUNT(*) as total FROM customer";
+        $result = $this->db->select($query);
+        return $result ? $result->fetch_assoc()['total'] : 0;
+    }
+
     public function get_new_customers()
     {
         $query = "SELECT COUNT(*) as total FROM customer WHERE DATE(created_at) = CURDATE()";
@@ -93,17 +101,38 @@ class Customer
         $country = $this->db->link->real_escape_string($this->fm->validation($data['country']));
         $zipcode = $this->db->link->real_escape_string($this->fm->validation($data['zipcode']));
         $id = $this->db->link->real_escape_string($this->fm->validation($id));
-        $image = !empty($files['image']['name']) ? $this->upload_image($files['image']) : $data['current_image'];
 
-        $query = "UPDATE customer SET name = '$name', email = '$email', phone = '$phone', address = '$address', 
-                  city = '$city', country = '$country', zipcode = '$zipcode', image = '$image' 
+        // Lấy ảnh hiện tại từ database nếu không upload ảnh mới
+        $current_image = '';
+        $get_current = $this->get_customer_by_id($id);
+        if ($get_current && $get_current->num_rows > 0) {
+            $current_data = $get_current->fetch_assoc();
+            $current_image = $current_data['image'];
+        }
+
+        // Xử lý upload ảnh mới nếu có
+        $image = $current_image;
+        if (!empty($files['image']['name'])) {
+            $new_image = $this->upload_image($files['image']);
+            if ($new_image) {
+                $image = $new_image;
+            } else {
+                return ['message' => 'Lỗi khi upload ảnh!'];
+            }
+        }
+
+        $query = "UPDATE customer SET 
+                  name = '$name', 
+                  email = '$email', 
+                  phone = '$phone', 
+                  address = '$address', 
+                  city = '$city', 
+                  country = '$country', 
+                  zipcode = '$zipcode', 
+                  image = '$image' 
                   WHERE customer_id = '$id'";
         $result = $this->db->update($query);
-        if ($result) {
-            return ['message' => 'Cập nhật khách hàng thành công'];
-        } else {
-            return ['message' => 'Cập nhật khách hàng thất bại'];
-        }
+        return ['message' => $result ? 'Cập nhật khách hàng thành công' : 'Cập nhật khách hàng thất bại'];
     }
 
     public function delete_customer($id)
@@ -116,10 +145,23 @@ class Customer
 
     private function upload_image($file)
     {
-        $target_dir = "uploads/";
+        $target_dir = "admin/uploads/"; // Đồng bộ với profile.php và editprofile.php
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true); // Tạo thư mục nếu chưa tồn tại
+        }
         $file_name = time() . "_" . basename($file["name"]);
         $target_file = $target_dir . $file_name;
-        move_uploaded_file($file["tmp_name"], $target_file);
-        return $file_name;
+        $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+
+        // Kiểm tra định dạng file
+        if (!in_array($file_ext, $allowed_types)) {
+            return false;
+        }
+        // Kiểm tra lỗi upload và di chuyển file
+        if ($file['error'] === UPLOAD_ERR_OK && move_uploaded_file($file["tmp_name"], $target_file)) {
+            return $file_name;
+        }
+        return false;
     }
 }

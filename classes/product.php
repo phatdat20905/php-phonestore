@@ -1,14 +1,17 @@
 <?php
 $filepath = realpath(dirname(__FILE__));
 include_once($filepath . '/../lib/Database.php');
+include_once($filepath . '/../helpers/format.php');
 
 class Product
 {
     private $db;
+    private $fm;
 
     public function __construct()
     {
         $this->db = new Database();
+        $this->fm = new Format();
     }
 
     public function insert_product($data, $files)
@@ -141,6 +144,21 @@ class Product
                   LEFT JOIN brand b ON p.brand_id = b.brand_id 
                   LEFT JOIN inventory i ON p.product_id = i.product_id 
                   WHERE p.product_id = '$id'";
+        return $this->db->select($query);
+    }
+
+
+    public function get_product_by_cat($cat_id)
+    {
+        $cat_id = $this->db->link->real_escape_string($this->fm->validation($cat_id));
+        $query = "SELECT * FROM product WHERE cat_id = '$cat_id'";
+        return $this->db->select($query);
+    }
+
+    public function get_product_by_brand($brand_id)
+    {
+        $brand_id = $this->db->link->real_escape_string($this->fm->validation($brand_id));
+        $query = "SELECT * FROM product WHERE brand_id = '$brand_id'";
         return $this->db->select($query);
     }
 }

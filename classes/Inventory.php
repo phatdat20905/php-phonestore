@@ -1,14 +1,16 @@
 <?php
 $filepath = realpath(dirname(__FILE__));
 include_once($filepath . '/../lib/Database.php');
-
+include_once($filepath . '/../helpers/format.php');
 class Inventory
 {
     private $db;
+    private $fm;
 
     public function __construct()
     {
         $this->db = new Database();
+        $this->fm = new Format();
     }
 
     public function update_inventory($product_id, $quantity_change, $note)
@@ -40,6 +42,14 @@ class Inventory
                   JOIN product p ON h.product_id = p.product_id 
                   $where 
                   ORDER BY h.created_at DESC";
+        return $this->db->select($query);
+    }
+
+
+    public function get_quantity_by_product($product_id)
+    {
+        $product_id = $this->db->link->real_escape_string($this->fm->validation($product_id));
+        $query = "SELECT quantity FROM inventory WHERE product_id = '$product_id'";
         return $this->db->select($query);
     }
 }

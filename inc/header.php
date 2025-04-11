@@ -42,13 +42,10 @@ header("Cache-Control: max-age=2592000");
 	<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
 	<link href="css/menu.css" rel="stylesheet" type="text/css" media="all" />
 	<link href="css/customer.css" rel="stylesheet" type="text/css" media="all" />
-	<script src="js/jquerymain.js"></script>
-	<script src="js/script.js" type="text/javascript"></script>
-	<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
-	<script type="text/javascript" src="js/nav.js"></script>
-	<script type="text/javascript" src="js/move-top.js"></script>
-	<script type="text/javascript" src="js/easing.js"></script>
-	<script type="text/javascript" src="js/nav-hover.js"></script>
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<!-- jQuery và DataTables -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<link href='http://fonts.googleapis.com/css?family=Monda' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Doppio+One' rel='stylesheet' type='text/css'>
 </head>
@@ -66,25 +63,6 @@ header("Cache-Control: max-age=2592000");
 						<input type="submit" value="SEARCH" name="search_product">
 					</form>
 				</div>
-				<!-- <div class="shopping_cart">
-					<div class="cart">
-						<a href="cart.php" title="View my shopping cart" rel="nofollow">
-							<span class="cart_title">Cart</span>
-							<span class="no_product">
-								<?php
-								$check_cart = $ct->check_cart();
-								if ($check_cart) {
-									$sum = Session::get("sum");
-									$qty = Session::get("qty");
-									echo $fm->format_currency($sum) . 'đ - Qty: ' . $qty;
-								} else {
-									echo 'Empty';
-								}
-								?>
-							</span>
-						</a>
-					</div>
-				</div> -->
 				<?php
 				if (isset($_GET['customer_id'])) {
 					$customer_id = $_GET['customer_id'];
@@ -111,30 +89,50 @@ header("Cache-Control: max-age=2592000");
 		<div class="menu">
 			<ul class="navbar">
 				<li><a href="index.php">Trang chủ</a></li>
-				<li><a href="products.php">Sản phẩm</a>
+				<li><a href="index.php">Danh mục sản phẩm</a>
 					<ul class="dropdown">
 						<?php
 						$getall_category = $cat->show_category_frontend();
-						if ($getall_category) {
+						if ($getall_category && $getall_category->num_rows > 0) {
 							while ($result_allcat = $getall_category->fetch_assoc()) {
 						?>
 								<li><a href="productbycat.php?catId=<?php echo $result_allcat['cat_id']; ?>"><?php echo $result_allcat['cat_name']; ?></a></li>
 						<?php
 							}
+						} else {
+							echo '<li><a href="#">Không có danh mục</a></li>';
 						}
 						?>
 					</ul>
 				</li>
-				<li><a href="topbrands.php">Thương hiệu</a>
+				<li><a href="index.php">Thương hiệu</a>
 					<ul class="dropdown">
 						<?php
 						$getall_brand = $brand->show_brand();
-						if ($getall_brand) {
+						if ($getall_brand && $getall_brand->num_rows > 0) {
 							while ($result_allbrand = $getall_brand->fetch_assoc()) {
 						?>
 								<li><a href="productbybrand.php?brandId=<?php echo $result_allbrand['brand_id']; ?>"><?php echo $result_allbrand['brand_name']; ?></a></li>
 						<?php
 							}
+						} else {
+							echo '<li><a href="#">Không có thương hiệu</a></li>';
+						}
+						?>
+					</ul>
+				</li>
+				<li><a href="blog.php">Danh mục tin tức</a>
+					<ul class="dropdown">
+						<?php
+						$getall_postcat = $postCat->show_category();
+						if ($getall_postcat && $getall_postcat->num_rows > 0) {
+							while ($result_allpostcat = $getall_postcat->fetch_assoc()) {
+						?>
+								<li><a href="blogbycat.php?postCatId=<?php echo $result_allpostcat['post_cat_id']; ?>"><?php echo $result_allpostcat['title']; ?></a></li>
+						<?php
+							}
+						} else {
+							echo '<li><a href="#">Không có danh mục tin tức</a></li>';
 						}
 						?>
 					</ul>
@@ -148,16 +146,16 @@ header("Cache-Control: max-age=2592000");
 					}
 				}
 				?>
-				<?php
-				$login_check = Session::get('customer_login');
-				if ($login_check) {
-					echo '<li><a href="profile.php">Profile</a></li>';
-					echo '<li><a href="cart.php">Cart</a></li>';
-					echo '<li><a href="compare.php">Compare</a></li>';
-					echo '<li><a href="wishlist.php">Wishlist</a></li>';
-					echo '<li><a href="history_order.php">Lịch sử đơn hàng</a></li>';
-				}
-				?>
-				<li><a href="contact.php">Contact</a></li>
+				<!-- <?php
+						$login_check = Session::get('customer_login');
+						if ($login_check) {
+							// echo '<li><a href="profile.php">Profile</a></li>';
+							// echo '<li><a href="cart.php">Cart</a></li>';
+							// echo '<li><a href="compare.php">Compare</a></li>';
+							// echo '<li><a href="wishlist.php">Wishlist</a></li>';
+							// echo '<li><a href="order_history.php">Lịch sử đơn hàng</a></li>';
+						}
+						?> -->
+				<li><a href="contact.php">Liên hệ</a></li>
 			</ul>
 		</div>

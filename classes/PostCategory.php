@@ -33,6 +33,14 @@ class PostCategory
         return $this->db->select($query);
     }
 
+    public function get_category_name($post_cat_id)
+    {
+        $post_cat_id = $this->db->link->real_escape_string($post_cat_id);
+        $query = "SELECT title FROM post_category WHERE post_cat_id = '$post_cat_id'";
+        $result = $this->db->select($query);
+        return $result ? $result->fetch_assoc()['title'] : 'Không xác định';
+    }
+
     public function update_category($title, $description, $status, $id)
     {
         $title = $this->db->link->real_escape_string($title);

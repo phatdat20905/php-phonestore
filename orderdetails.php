@@ -3,7 +3,7 @@ include 'inc/header.php';
 
 $login_check = Session::get('customer_login');
 if ($login_check == false) {
-	header('Location:login.php');
+	header('Location: login.php');
 	exit;
 }
 
@@ -29,6 +29,21 @@ if (isset($_GET['cancelid'])) {
 		$message = $result['message'];
 	}
 }
+
+if (!isset($_GET['orderid']) || empty($_GET['orderid'])) {
+	header('Location: index.php');
+	exit;
+}
+
+$order_id = $_GET['orderid'];
+$customer_id = Session::get('customer_id');
+
+// Kiểm tra đơn hàng có thuộc về khách hàng không
+$check_order = $order->get_order_by_id_and_customer($order_id, $customer_id);
+if (!$check_order || $check_order->num_rows == 0) {
+	header('Location: order_history.php');
+	exit;
+}
 ?>
 
 <div class="main">
@@ -52,12 +67,12 @@ if (isset($_GET['cancelid'])) {
 				</thead>
 				<tbody>
 					<?php
-					$customer_id = Session::get('customer_id');
-					$get_orders = $order->get_orders_by_customer($customer_id);
-					if ($get_orders) {
+					$get_order_details = $order->get_order_details($order_id);
+					if ($get_order_details && $get_order_details->num_rows > 0) {
 						$i = 0;
-						while ($result = $get_orders->fetch_assoc()) {
+						while ($result = $get_order_details->fetch_assoc()) {
 							$i++;
+							$order_info = $order->get_order_by_id_and_customer($order_id, $customer_id)->fetch_assoc();
 					?>
 							<tr>
 								<td><?php echo $i ?></td>
@@ -65,22 +80,23 @@ if (isset($_GET['cancelid'])) {
 								<td><img src="admin/uploads/<?php echo $result['image'] ?>" alt="Ảnh sản phẩm" /></td>
 								<td><?php echo $fm->format_currency($result['price']) . ' VND' ?></td>
 								<td><?php echo $result['quantity'] ?></td>
-								<td><?php echo $fm->formatDate($result['created_at']) ?></td>
-								<td><?php echo $result['order_code'] ?></td>
+								<td><?php echo $fm->formatDate($order_info['created_at']) ?></td>
+								<td><?php echo $order_info['order_code'] ?></td>
 								<td>
 									<?php
-									if ($result['status'] == 0) echo "Đang xử lý";
-									elseif ($result['status'] == 1) echo "Đang giao";
-									elseif ($result['status'] == 2) echo "Đã nhận";
+									if ($order_info['status'] == 0) echo "Đang xử lý";
+									elseif ($order_info['status'] == 1) echo "Đang giao";
+									elseif ($order_info['status'] == 2) echo "Đã nhận";
+									elseif ($order_info['status'] == 3) echo "Thành công";
 									?>
 								</td>
 								<td>
 									<?php
-									if ($result['status'] == 0) {
-										echo '<a href="?cancelid=' . $result['order_id'] . '" class="cancel-link" onclick="return confirm(\'Bạn có chắc muốn hủy đơn hàng ' . $result['order_code'] . ' không?\')">Hủy</a>';
-									} elseif ($result['status'] == 1) {
-										echo '<a href="?confirmid=' . $customer_id . '&orderid=' . $result['order_id'] . '" class="action-link">Đã nhận</a>';
-									} elseif ($result['status'] == 2) {
+									if ($order_info['status'] == 0) {
+										echo '<a href="?cancelid=' . $order_info['order_id'] . '" class="cancel-link" onclick="return confirm(\'Bạn có chắc muốn hủy đơn hàng ' . $order_info['order_code'] . ' không?\')">Hủy</a>';
+									} elseif ($order_info['status'] == 1) {
+										echo '<a href="?confirmid=' . $customer_id . '&orderid=' . $order_info['order_id'] . '" class="action-link">Đã nhận</a>';
+									} elseif ($order_info['status'] == 2) {
 										echo "Đã nhận";
 									}
 									?>
@@ -89,13 +105,13 @@ if (isset($_GET['cancelid'])) {
 					<?php
 						}
 					} else {
-						echo '<tr><td colspan="9">Bạn chưa có đơn hàng nào!</td></tr>';
+						echo '<tr><td colspan="9">Không có sản phẩm trong đơn hàng này!</td></tr>';
 					}
 					?>
 				</tbody>
 			</table>
 			<div class="shopping">
-				<a href="index.php" class="shop-btn">Tiếp tục mua sắm</a>
+				<a href="order_history.php" class="shop-btn">Quay lại lịch sử đơn hàng</a>
 			</div>
 		</div>
 	</div>

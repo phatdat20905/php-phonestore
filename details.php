@@ -210,7 +210,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitComment'])) {
 include 'inc/footer.php';
 ?>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('.star-input').on('click', function() {

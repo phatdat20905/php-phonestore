@@ -1,14 +1,17 @@
 <?php
 $filepath = realpath(dirname(__FILE__));
 include_once($filepath . '/../lib/Database.php');
+include_once($filepath . '/../helpers/format.php');
 
 class Brand
 {
     private $db;
+    private $fm;
 
     public function __construct()
     {
         $this->db = new Database();
+        $this->fm = new Format();
     }
 
     public function insert_brand($brand_name)
@@ -44,5 +47,13 @@ class Brand
         $query = "DELETE FROM brand WHERE brand_id = '$id'";
         $result = $this->db->delete($query);
         return ['success' => $result, 'message' => $result ? 'Xóa thành công!' : 'Lỗi khi xóa'];
+    }
+
+    public function get_brand_name($brand_id)
+    {
+        $brand_id = $this->db->link->real_escape_string($this->fm->validation($brand_id));
+        $query = "SELECT brand_name FROM brand WHERE brand_id = '$brand_id'";
+        $result = $this->db->select($query);
+        return $result ? $result->fetch_assoc()['brand_name'] : 'Không xác định';
     }
 }

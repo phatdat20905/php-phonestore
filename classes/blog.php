@@ -71,4 +71,12 @@ class Blog
         move_uploaded_file($file["tmp_name"], $target_file);
         return $file_name;
     }
+
+
+    public function get_blogs_by_category($post_cat_id)
+    {
+        $post_cat_id = $this->db->link->real_escape_string($post_cat_id);
+        $query = "SELECT * FROM blog WHERE post_cat_id = '$post_cat_id' ORDER BY blog_id DESC";
+        return $this->db->select($query);
+    }
 }
