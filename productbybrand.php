@@ -10,6 +10,11 @@ if (!isset($_GET['brandId']) || $_GET['brandId'] == NULL) {
     $id = $_GET['brandId'];
 }
 
+// Phân trang
+$products_per_page = 8; // Số sản phẩm mỗi trang
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? $_GET['page'] : 1;
+$offset = ($page - 1) * $products_per_page;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['themgiohang'])) {
     $product_stock = $inventory->get_quantity_by_product($_POST['product_id']);
     $stock = ($product_stock && $product_stock->num_rows > 0) ? $product_stock->fetch_assoc()['quantity'] : 0;
@@ -32,10 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['themgiohang'])) {
         </div>
         <div class="section group">
             <?php
-            $products_by_brand = $product->get_product_by_brand($id);
+            $products_by_brand = $product->get_product_by_brand($id, $products_per_page, $offset);
             if ($products_by_brand && $products_by_brand->num_rows > 0) {
                 while ($result = $products_by_brand->fetch_assoc()) {
-                    // Lấy số lượng từ bảng inventory
                     $inventory_qty = $inventory->get_quantity_by_product($result['product_id']);
                     $stock = ($inventory_qty && $inventory_qty->num_rows > 0) ? $inventory_qty->fetch_assoc()['quantity'] : 0;
             ?>
@@ -60,8 +64,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['themgiohang'])) {
             }
             ?>
         </div>
+
+        <!-- Phân trang -->
+        <?php
+        $total_products = $product->count_products_by_brand($id);
+        $total_pages = ceil($total_products / $products_per_page);
+        if ($total_pages > 1) {
+        ?>
+            <div class="pagination">
+                <?php if ($page > 1) { ?>
+                    <a href="productbybrand.php?brandId=<?php echo $id; ?>&page=<?php echo $page - 1; ?>" class="page-link">« Trước</a>
+                <?php } ?>
+                <?php for ($i = 1; $i <= $total_pages; $i++) { ?>
+                    <a href="productbybrand.php?brandId=<?php echo $id; ?>&page=<?php echo $i; ?>" class="page-link <?php echo $i == $page ? 'active' : ''; ?>"><?php echo $i; ?></a>
+                <?php } ?>
+                <?php if ($page < $total_pages) { ?>
+                    <a href="productbybrand.php?brandId=<?php echo $id; ?>&page=<?php echo $page + 1; ?>" class="page-link">Tiếp »</a>
+                <?php } ?>
+            </div>
+        <?php } ?>
     </div>
 </div>
+
+<style>
+    .pagination {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .page-link {
+        display: inline-block;
+        padding: 8px 12px;
+        margin: 0 5px;
+        text-decoration: none;
+        color: #ff6600;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+    .page-link:hover {
+        background: #ff6600;
+        color: #fff;
+        border-color: #ff6600;
+    }
+
+    .page-link.active {
+        background: #ff6600;
+        color: #fff;
+        border-color: #ff6600;
+    }
+</style>
 
 <?php
 include 'inc/footer.php';

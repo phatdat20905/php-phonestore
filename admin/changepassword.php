@@ -1,10 +1,8 @@
-﻿<?php include 'inc/header.php'; ?>
-<?php include 'inc/sidebar.php'; ?>
-<?php include '../classes/Admin.php'; ?>
-<?php include_once($filepath . '/../lib/Session.php'); ?>
-<?php
-Session::init();
-$admin = new Admin();
+﻿<?php
+include 'inc/header.php';
+include 'inc/sidebar.php';
+
+$admin = new Admin(); // Class Admin đã được load trong inc/header.php
 $message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $old_password = $_POST['old_password'];

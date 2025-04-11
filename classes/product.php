@@ -96,7 +96,7 @@ class Product
                   FROM order_details od 
                   JOIN product p ON od.product_id = p.product_id 
                   JOIN `order` o ON od.order_id = o.order_id 
-                  WHERE o.status = 2 
+                  WHERE o.status = 3
                   GROUP BY p.product_id, p.product_name 
                   ORDER BY total_quantity DESC 
                   LIMIT 10";
@@ -148,17 +148,70 @@ class Product
     }
 
 
-    public function get_product_by_cat($cat_id)
+    // Sửa hàm get_product_by_cat để hỗ trợ phân trang
+    public function get_product_by_cat($cat_id, $limit = null, $offset = null)
     {
         $cat_id = $this->db->link->real_escape_string($this->fm->validation($cat_id));
         $query = "SELECT * FROM product WHERE cat_id = '$cat_id'";
+        if ($limit !== null && $offset !== null) {
+            $query .= " LIMIT $offset, $limit";
+        }
         return $this->db->select($query);
     }
 
-    public function get_product_by_brand($brand_id)
+    // Thêm hàm đếm tổng số sản phẩm theo danh mục
+    public function count_products_by_cat($cat_id)
+    {
+        $cat_id = $this->db->link->real_escape_string($this->fm->validation($cat_id));
+        $query = "SELECT COUNT(*) as total FROM product WHERE cat_id = '$cat_id'";
+        $result = $this->db->select($query);
+        return $result ? $result->fetch_assoc()['total'] : 0;
+    }
+
+    // Sửa hàm get_product_by_brand để hỗ trợ phân trang
+    public function get_product_by_brand($brand_id, $limit = null, $offset = null)
     {
         $brand_id = $this->db->link->real_escape_string($this->fm->validation($brand_id));
         $query = "SELECT * FROM product WHERE brand_id = '$brand_id'";
+        if ($limit !== null && $offset !== null) {
+            $query .= " LIMIT $offset, $limit";
+        }
         return $this->db->select($query);
+    }
+
+    // Thêm hàm đếm tổng số sản phẩm theo thương hiệu
+    public function count_products_by_brand($brand_id)
+    {
+        $brand_id = $this->db->link->real_escape_string($this->fm->validation($brand_id));
+        $query = "SELECT COUNT(*) as total FROM product WHERE brand_id = '$brand_id'";
+        $result = $this->db->select($query);
+        return $result ? $result->fetch_assoc()['total'] : 0;
+    }
+
+
+    // Hàm tìm kiếm sản phẩm
+    public function search_product($keyword, $limit, $offset)
+    {
+        $keyword = $this->db->link->real_escape_string($keyword);
+        $query = "SELECT * FROM product 
+                  WHERE product_name LIKE '%$keyword%' OR product_desc LIKE '%$keyword%' 
+                  AND type = 1 
+                  LIMIT $offset, $limit";
+        return $this->db->select($query);
+    }
+
+    // Hàm đếm tổng số sản phẩm tìm được
+    public function count_search_products($keyword)
+    {
+        $keyword = $this->db->link->real_escape_string($keyword);
+        $query = "SELECT COUNT(*) as total FROM product 
+                  WHERE product_name LIKE '%$keyword%' OR product_desc LIKE '%$keyword%' 
+                  AND type = 1";
+        $result = $this->db->select($query);
+        if ($result) {
+            $row = $result->fetch_assoc();
+            return $row['total'];
+        }
+        return 0;
     }
 }

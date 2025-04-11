@@ -1,10 +1,16 @@
-.listview_1_of_2.images_1_of_2{
-min-height: 150px !important;
+.listview_1_of_2.images_1_of_2 {
+    min-height: 150px !important;
+    border-radius: 8px;
 }
 
-/* CSS tùy chỉnh cho header và navbar */
+/* CSS tùy chỉnh cho header */
 .header_top {
     padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
 }
 
 .logo img {
@@ -14,49 +20,147 @@ min-height: 150px !important;
 .header_top_right {
     display: flex;
     align-items: center;
-    gap: 15px;
+    justify-content: space-around;
+    width:67%;
+}
+
+.search_box {
+    display: flex;
+    align-items: center;
+    position:relative;
+	width:47%;
 }
 
 .search_box input[type="text"] {
     padding: 8px;
-    width: 200px;
+    width: 280px;
     border: 1px solid #ccc;
     border-radius: 4px 0 0 4px;
+    font-size: 14px;
+    outline: none;
 }
 
-.search_box input[type="submit"] {
+.search_box .search_btn {
     padding: 8px 15px;
     background: #ff6600;
     color: #fff;
     border: none;
     border-radius: 0 4px 4px 0;
     cursor: pointer;
+    transition: background 0.3s ease;
 }
 
-.shopping_cart .cart {
+.search_box .search_btn:hover {
+    background: #e65c00;
+}
+
+.account_section {
+    display: flex;
+    align-items: center;
+}
+
+.customer_info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.customer_info span {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.profile_dropdown {
     position: relative;
 }
 
-.cart_title {
-    font-weight: bold;
+.profile_pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #ff6600;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s ease;
 }
 
-.no_product {
-    font-size: 12px;
-    color: #666;
+.profile_pic:hover {
+    transform: scale(1.1);
 }
 
-.login_customer a {
+.dropdown_menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 45px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    list-style: none;
+    padding: 5px 0;
+    min-width: 180px;
+    z-index: 1000;
+}
+
+.profile_dropdown:hover .dropdown_menu {
+    display: block;
+}
+
+.dropdown_menu li {
     padding: 8px 15px;
+}
+
+.dropdown_menu li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s ease;
+}
+
+.dropdown_menu li a:hover {
+    background: #ff6600;
+    color: #fff;
+}
+
+.auth_links {
+    display: flex;
+    gap: 10px;
+}
+
+.auth_btn {
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 15px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+}
+
+.login_btn {
+    background: #ff6600;
+    color: #fff;
+}
+
+.login_btn:hover {
+    background: #e65c00;
+    transform: translateY(-2px);
+}
+
+.register_btn {
     background: #333;
     color: #fff;
-    text-decoration: none;
-    border-radius: 4px;
-    border: unset;
 }
 
-.login_customer a:hover {
+.register_btn:hover {
     background: #ff6600;
+    transform: translateY(-2px);
 }
 
 /* Navbar CSS */
@@ -117,10 +221,7 @@ min-height: 150px !important;
     color: #ff6600;
 }
 
-
-
 /* CSS tùy chỉnh cho index.php */
-
 .grid_1_of_4 input[type="number"] {
     width: 60px;
     padding: 5px;
@@ -158,5 +259,5 @@ min-height: 150px !important;
 
 /* details.php */
 .product-desc h2, .product-tags h2, .buysubmit {
- background-color: #ff6600;
+    background-color: #ff6600;
 }

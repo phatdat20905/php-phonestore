@@ -55,6 +55,7 @@ $result = $admin_data->fetch_assoc();
                 <li><a href="index.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="orderlist.php"><i class="fas fa-inbox"></i> Danh Sách đơn hàng</a></li>
                 <li><a href="changepassword.php"><i class="fas fa-key"></i> Đổi mật khẩu</a></li>
+                <li><a href="contactlist.php"><i class="fas fa-globe"></i> Liên Hệ</a></li>
                 <li><a href="../index.php" target="_blank"><i class="fas fa-globe"></i> Xem website</a></li>
             </ul>
         </div>

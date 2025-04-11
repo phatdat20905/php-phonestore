@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
 		height: 150px;
 		object-fit: cover;
 		border-radius: 50%;
-		border: 2px solid #4203a9;
+		border: 2px solid #ff6600;
 		margin-bottom: 10px;
 	}
 

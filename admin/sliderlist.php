@@ -46,10 +46,10 @@ if (isset($_GET['delId'])) {
 							<td><?php echo $result['slider_name']; ?></td>
 							<td><img src="uploads/<?php echo $result['slider_image']; ?>" alt="Slider Image" width="80"></td>
 							<td>
-								<?php if ($result['type'] == 0): ?>
-									<a href="?id=<?php echo $result['slider_id']; ?>&type=1" class="btn">Tắt</a>
+								<?php if ($result['type'] == 1): ?>
+									<a href="?id=<?php echo $result['slider_id']; ?>&type=0" class="btn">Tắt</a>
 								<?php else: ?>
-									<a href="?id=<?php echo $result['slider_id']; ?>&type=0" class="btn btn-edit">Bật</a>
+									<a href="?id=<?php echo $result['slider_id']; ?>&type=1" class="btn btn-edit">Bật</a>
 								<?php endif; ?>
 							</td>
 							<td>
