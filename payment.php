@@ -15,11 +15,11 @@ if ($login_check == false) {
 				<h3>Phương thức thanh toán</h3>
 				<div class="wrapper_method">
 					<h4>Chọn phương thức thanh toán của bạn:</h4>
-					<a href="offlinepayment.php" class="payment-btn">Thanh toán ngoại tuyến</a>
-					<a href="onlinepayment.php" class="payment-btn">Thanh toán trực tuyến</a>
+					<a href="offlinepayment.php" class="payment-btn">Thanh toán trực tiếp</a>
+					<a href="onlinepayment.php" class="payment-btn">Thanh toán online</a>
 				</div>
 				<div style="text-align: center;">
-					<a href="cart.php" class="back-btn">Quay lại giỏ hàng</a>
+					<a href="order.php" class="back-btn">Quay lại xác nhận đơn hàng</a>
 				</div>
 			</div>
 		</div>
@@ -65,8 +65,10 @@ if ($login_check == false) {
 		background: #4203a9;
 		color: white;
 		text-decoration: none;
+		border: none;
 		border-radius: 5px;
 		margin: 10px;
+		cursor: pointer;
 	}
 
 	.payment-btn:hover {

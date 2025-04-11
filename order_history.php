@@ -57,7 +57,7 @@ $order = new Order(); // Giả định class Order đã có
                                     }
                                     ?></td>
                                 <td>
-                                    <a href="orderdetails_history.php?orderid=<?php echo $result['order_id']; ?>" class="btn">Xem chi tiết</a>
+                                    <a href="orderdetails.php?orderid=<?php echo $result['order_id']; ?>" class="btn">Xem chi tiết</a>
                                 </td>
                             </tr>
                     <?php
@@ -78,12 +78,6 @@ $order = new Order(); // Giả định class Order đã có
 <?php include 'inc/footer.php'; ?>
 
 <style>
-    .main {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 40px 20px;
-    }
-
     .order-history-container {
         background: #fff;
         padding: 30px;

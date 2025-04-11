@@ -158,14 +158,14 @@ if (isset($_GET['customer_id'])) {
 						?>
 					</ul>
 				</li>
-				<!-- <?php
-						if ($login_check && $customer_id) {
-							$check_order = $order->check_order($customer_id);
-							if ($check_order == true) {
-								echo '<li><a href="orderdetails.php">Ordered</a></li>';
-							}
-						}
-						?> -->
+				<?php
+				if ($login_check && $customer_id) {
+					$check_order = $order->check_order($customer_id);
+					if ($check_order == true) {
+						echo '<li><a href="cart.php">Giỏ hàng</a></li>';
+					}
+				}
+				?>
 				<li><a href="about.php">Về chúng tôi</a></li>
 				<li><a href="contact.php">Liên hệ</a></li>
 			</ul>

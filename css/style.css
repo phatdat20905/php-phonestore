@@ -1388,7 +1388,7 @@ p.note{
 	font-weight : normal;
 	margin-top: 0px;
 }
-.cartpage {
+/* .cartpage {
   border: 1px solid #ddd;
   overflow: hidden;
   padding: 10px;
@@ -1398,7 +1398,7 @@ p.note{
   font-size: 30px;
   margin-bottom: 20px;
   width: 141px;
-}
+} */
 .tblone {
   border: 1px solid #fff;
   margin-bottom: 12px;

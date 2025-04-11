@@ -64,7 +64,7 @@ if (!isset($_GET['id'])) {
 								<tr>
 									<td><?php echo $result['product_name'] ?></td>
 									<td><img src="admin/uploads/<?php echo $result['image'] ?>" alt="Ảnh sản phẩm" /></td>
-									<td><?php echo $fm->format_currency($result['price']) . ' VND' ?></td>
+									<td><?php echo number_format($result['price'], 0, ',', '.') . ' VND' ?></td>
 									<td>
 										<form action="" method="post">
 											<input type="hidden" name="cartId" value="<?php echo $result['cart_id'] ?>" />
@@ -132,12 +132,6 @@ include 'inc/footer.php';
 ?>
 
 <style>
-	.main {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 40px 20px;
-	}
-
 	.cartpage {
 		background: #fff;
 		padding: 20px;
@@ -147,9 +141,9 @@ include 'inc/footer.php';
 
 	h2 {
 		color: #4203a9;
-		font-size: 24px;
-		margin-bottom: 20px;
+		font-size: 28px;
 		text-align: center;
+		margin-bottom: 30px;
 	}
 
 	.message {

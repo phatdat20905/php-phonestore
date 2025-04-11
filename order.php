@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_order'])) {
 								<tr>
 									<td><?php echo $item['product_name'] ?></td>
 									<td><img src="admin/uploads/<?php echo $item['image'] ?>" alt="Ảnh sản phẩm" /></td>
-									<td><?php echo $fm->format_currency($item['price']) . ' VND' ?></td>
+									<td><?php echo number_format($item['price'], 0, ',', '.') . ' VND' ?></td>
 									<td><?php echo $item['quantity'] ?></td>
 									<td><?php echo $fm->format_currency($total) . ' VND' ?></td>
 								</tr>

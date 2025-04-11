@@ -59,7 +59,7 @@ $order_info = $check_order->fetch_assoc();
                                 <td><?php echo $i; ?></td>
                                 <td><?php echo $result['product_name']; ?></td>
                                 <td><img src="admin/uploads/<?php echo $result['image']; ?>" alt="Ảnh sản phẩm" /></td>
-                                <td><?php echo $fm->format_currency($result['price']) . ' VND'; ?></td>
+                                <td><?php echo number_format($result['price'], 0, ',', '.') . ' VND'; ?></td>
                                 <td><?php echo $result['quantity']; ?></td>
                                 <td><?php echo $fm->format_currency($subtotal) . ' VND'; ?></td>
                                 <td>
@@ -109,12 +109,6 @@ $order_info = $check_order->fetch_assoc();
 <?php include 'inc/footer.php'; ?>
 
 <style>
-    .main {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 40px 20px;
-    }
-
     .cartpage {
         background: #fff;
         padding: 20px;
