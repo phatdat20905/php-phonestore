@@ -55,6 +55,7 @@ $cs = new Customer();
 							</tr>
 						</table>
 						<a href="editprofile.php" class="btn">Chỉnh sửa thông tin</a>
+						<a href="changepassword.php" class="btn">Đổi mật khẩu</a>
 					</div>
 				</div>
 			<?php

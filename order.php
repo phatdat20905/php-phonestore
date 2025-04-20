@@ -3,14 +3,13 @@ include 'inc/header.php';
 
 $login_check = Session::get('customer_login');
 if ($login_check == false) {
-	header('Location:login.php');
+	header('Location: login.php');
 	exit;
 }
 
 $ct = new Cart();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_order'])) {
-	// Không gọi insert_order() ở đây, chỉ chuyển sang payment.php
 	header("Location: payment.php");
 	exit;
 }
@@ -19,16 +18,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_order'])) {
 <div class="main">
 	<div class="content">
 		<div class="cartpage">
-			<h3>Xác nhận đơn hàng</h3>
+			<h2>Xác nhận đơn hàng</h2>
 			<form method="post">
 				<table class="cart-table">
 					<thead>
 						<tr>
-							<th>Tên sản phẩm</th>
-							<th>Hình ảnh</th>
-							<th>Giá</th>
-							<th>Số lượng</th>
-							<th>Tổng tiền</th>
+							<th width="25%">Tên sản phẩm</th>
+							<th width="20%">Hình ảnh</th>
+							<th width="15%">Giá</th>
+							<th width="15%">Số lượng</th>
+							<th width="25%">Tổng tiền</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -70,13 +69,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_order'])) {
 							</tr>
 						</table>
 						<div class="order-actions">
-							<button type="submit" name="confirm_order" class="submit-btn">Xác nhận đặt hàng</button>
-							<a href="cart.php" class="back-btn">Quay lại giỏ hàng</a>
+							<button type="submit" name="confirm_order" class="check-btn">Xác nhận đặt hàng</button>
+							<a href="cart.php" class="shop-btn">Quay lại giỏ hàng</a>
 						</div>
 					</div>
 				<?php } else { ?>
 					<p class="empty-cart">Giỏ hàng của bạn trống! Vui lòng thêm sản phẩm.</p>
-					<div class="shopping"><a href="index.php" class="shop-btn">Mua sắm ngay</a></div>
+					<div class="shopping">
+						<a href="index.php" class="shop-btn">Mua sắm ngay</a>
+					</div>
 				<?php } ?>
 			</form>
 		</div>
@@ -86,31 +87,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_order'])) {
 <?php include 'inc/footer.php'; ?>
 
 <style>
-	.main {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 40px 20px;
-	}
-
 	.cartpage {
 		background: #fff;
 		padding: 20px;
 		border-radius: 10px;
 		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+		margin-bottom: 40px;
+		/* Khoảng cách với footer */
 	}
 
-	h3 {
+	h2 {
 		color: #4203a9;
-		font-size: 24px;
+		font-size: 28px;
 		text-align: center;
-		margin-bottom: 20px;
-	}
-
-	.message {
-		display: block;
-		color: #ff3333;
-		text-align: center;
-		margin-bottom: 15px;
+		margin-bottom: 30px;
 	}
 
 	.cart-table {
@@ -137,58 +127,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_order'])) {
 	}
 
 	.cart-summary {
-		float: right;
 		width: 40%;
+		margin-left: auto;
+		margin-bottom: 20px;
 	}
 
 	.cart-summary table {
 		width: 100%;
+		border-collapse: collapse;
 	}
 
-	.cart-summary th {
+	.cart-summary th,
+	.cart-summary td {
+		padding: 10px;
 		text-align: left;
 	}
 
 	.empty-cart {
 		text-align: center;
 		color: #666;
+		font-size: 16px;
+		margin: 20px 0;
 	}
 
 	.order-actions {
-		margin-top: 20px;
 		display: flex;
-		justify-content: space-between;
+		gap: 10px;
+		margin-top: 20px;
+		justify-content: flex-end;
 	}
 
-	.submit-btn {
+	.check-btn,
+	.shop-btn {
 		padding: 10px 20px;
-		background: #4203a9;
-		color: white;
 		border: none;
 		border-radius: 5px;
+		color: white;
+		text-decoration: none;
 		cursor: pointer;
+		font-size: 14px;
 	}
 
-	.submit-btn:hover {
+	.check-btn {
+		background: #4203a9;
+	}
+
+	.check-btn:hover {
 		background: #35028c;
 	}
 
-	.back-btn,
 	.shop-btn {
-		padding: 10px 20px;
 		background: #666;
-		color: white;
-		text-decoration: none;
-		border-radius: 5px;
 	}
 
-	.back-btn:hover,
 	.shop-btn:hover {
 		background: #555;
 	}
 
 	.shopping {
 		text-align: center;
-		margin-top: 20px;
+		margin: 20px 0;
 	}
 </style>

@@ -164,4 +164,27 @@ class Customer
         }
         return false;
     }
+
+    // Kiểm tra mật khẩu cũ
+    public function check_old_password($customer_id, $old_password)
+    {
+        $customer_id = $this->db->link->real_escape_string($this->fm->validation($customer_id));
+        $query = "SELECT password FROM customer WHERE customer_id = '$customer_id' LIMIT 1";
+        $result = $this->db->select($query);
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return password_verify($old_password, $row['password']);
+        }
+        return false;
+    }
+
+    // Cập nhật mật khẩu mới
+    public function update_password($customer_id, $new_password)
+    {
+        $customer_id = $this->db->link->real_escape_string($this->fm->validation($customer_id));
+        $new_password = password_hash($new_password, PASSWORD_BCRYPT);
+        $query = "UPDATE customer SET password = '$new_password' WHERE customer_id = '$customer_id'";
+        $result = $this->db->update($query);
+        return $result;
+    }
 }

@@ -69,9 +69,7 @@ if (isset($_GET['delid'])) {
 					</tbody>
 				</table>
 				<div class="shopping">
-					<div class="shopleft">
-						<a href="index.php"><img src="images/shop.png" alt="Tiếp tục mua sắm" /></a>
-					</div>
+					<a href="index.php" class="shop-btn">Tiếp tục mua sắm</a>
 				</div>
 			</div>
 		</div>
@@ -159,7 +157,15 @@ if (isset($_GET['delid'])) {
 		margin-top: 20px;
 	}
 
-	.shopleft img {
-		max-width: 150px;
+	.shop-btn {
+		padding: 10px 20px;
+		background: #4203a9;
+		color: white;
+		text-decoration: none;
+		border-radius: 5px;
+	}
+
+	.shop-btn:hover {
+		background: #35028c;
 	}
 </style>

@@ -110,7 +110,7 @@ if (isset($_GET['customer_id'])) {
 		<div class="menu">
 			<ul class="navbar">
 				<li><a href="index.php">Trang chủ</a></li>
-				<li><a href="products.php">Danh mục sản phẩm</a>
+				<li><a href="index.php">Danh mục sản phẩm</a>
 					<ul class="dropdown">
 						<?php
 						$getall_category = $cat->show_category_frontend();
@@ -126,7 +126,7 @@ if (isset($_GET['customer_id'])) {
 						?>
 					</ul>
 				</li>
-				<li><a href="topbrands.php">Thương hiệu</a>
+				<li><a href="index.php">Thương hiệu</a>
 					<ul class="dropdown">
 						<?php
 						$getall_brand = $brand->show_brand();
@@ -142,7 +142,7 @@ if (isset($_GET['customer_id'])) {
 						?>
 					</ul>
 				</li>
-				<li><a href="blog.php">Danh mục tin tức</a>
+				<li><a href="index.php">Danh mục tin tức</a>
 					<ul class="dropdown">
 						<?php
 						$getall_postcat = $postCat->show_category();
