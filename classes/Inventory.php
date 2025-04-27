@@ -53,3 +53,4 @@ class Inventory
         return $this->db->select($query);
     }
 }
+?>

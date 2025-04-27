@@ -70,3 +70,4 @@ class Compare
         return $this->db->delete($query);
     }
 }
+?>

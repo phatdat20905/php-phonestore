@@ -53,3 +53,4 @@ class Contact
         return ['success' => $result, 'message' => $result ? 'Xóa liên hệ thành công!' : 'Lỗi khi xóa liên hệ'];
     }
 }
+?>

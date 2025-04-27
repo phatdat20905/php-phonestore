@@ -188,3 +188,4 @@ class Customer
         return $result;
     }
 }
+?>

@@ -64,3 +64,4 @@ class Category
         return $result ? $result->fetch_assoc()['cat_name'] : 'Không xác định';
     }
 }
+?>

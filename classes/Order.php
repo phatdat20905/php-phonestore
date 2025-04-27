@@ -240,3 +240,4 @@ class Order
         return $result ? true : false;
     }
 }
+?>

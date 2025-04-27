@@ -246,3 +246,4 @@ class Cart
         Session::set("qty", $result['qty'] ?? 0);
     }
 }
+?>

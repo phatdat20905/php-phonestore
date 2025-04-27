@@ -57,3 +57,4 @@ class Brand
         return $result ? $result->fetch_assoc()['brand_name'] : 'Không xác định';
     }
 }
+?>

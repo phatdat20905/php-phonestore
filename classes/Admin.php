@@ -166,3 +166,4 @@ class Admin
         return $this->db->select($query);
     }
 }
+?>

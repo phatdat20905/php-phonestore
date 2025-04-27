@@ -56,3 +56,4 @@ class Comment
         return ['success' => $result, 'message' => $result ? 'Xóa thành công!' : 'Lỗi khi xóa'];
     }
 }
+?>

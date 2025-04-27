@@ -80,3 +80,4 @@ class Blog
         return $this->db->select($query);
     }
 }
+?>

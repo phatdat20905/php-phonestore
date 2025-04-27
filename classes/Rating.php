@@ -74,3 +74,4 @@ class Rating
         return $this->db->select($query);
     }
 }
+?>

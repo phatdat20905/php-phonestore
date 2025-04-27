@@ -231,3 +231,4 @@ class Product
         return 0;
     }
 }
+?>

@@ -70,3 +70,4 @@ class Wishlist
         return $this->db->delete($query);
     }
 }
+?>

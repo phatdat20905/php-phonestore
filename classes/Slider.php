@@ -58,3 +58,4 @@ class Slider
         return $this->db->select($query);
     }
 }
+?>
