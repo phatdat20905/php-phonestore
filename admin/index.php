@@ -121,6 +121,41 @@ $cs = new Customer();
           </table>
         </div>
       </div>
+      <!-- Sản phẩm bán chạy -->
+      <div class="report-section">
+                <h3>Sản phẩm bán chạy nhất</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Số lượng bán</th>
+                            <th>Tổng doanh thu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $top_products = $pd->get_top_selling_products();
+                        if ($top_products && $top_products->num_rows > 0) {
+                            $i = 0;
+                            while ($result = $top_products->fetch_assoc()) {
+                                $i++;
+                        ?>
+                                <tr>
+                                    <td><?php echo $i; ?></td>
+                                    <td><?php echo $result['product_name']; ?></td>
+                                    <td><?php echo $result['total_quantity']; ?></td>
+                                    <td><?php echo number_format($result['total_revenue'], 0, ',', '.') . ' VNĐ'; ?></td>
+                                </tr>
+                        <?php
+                            }
+                        } else {
+                            echo "<tr><td colspan='4'>Không có dữ liệu sản phẩm bán chạy</td></tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
     </div>
   </div>
 </div>
@@ -180,6 +215,7 @@ $cs = new Customer();
 
   .revenue-stats {
     margin-top: 30px;
+    margin-bottom: 30px;
   }
 
   .revenue-stats h3 {

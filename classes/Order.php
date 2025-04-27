@@ -57,6 +57,29 @@ class Order
         return $this->db->select($query);
     }
 
+    public function filter_orders($status, $customer, $order_code)
+    {
+        $status = $this->db->link->real_escape_string($status);
+        $customer = $this->db->link->real_escape_string($customer);
+        $order_code = $this->db->link->real_escape_string($order_code);
+
+        $query = "SELECT o.*, c.name 
+                  FROM `order` o 
+                  JOIN customer c ON o.customer_id = c.customer_id 
+                  WHERE 1=1";
+        if ($status !== '') {
+            $query .= " AND o.status = '$status'";
+        }
+        if ($customer) {
+            $query .= " AND c.name LIKE '%$customer%'";
+        }
+        if ($order_code) {
+            $query .= " AND o.order_code LIKE '%$order_code%'";
+        }
+        $query .= " ORDER BY o.created_at DESC";
+        return $this->db->select($query);
+    }
+
     public function get_order_details($order_id)
     {
         $order_id = $this->db->link->real_escape_string($order_id);
@@ -96,7 +119,7 @@ class Order
         $query = "UPDATE `order` SET status = '$status' WHERE order_id = '$order_id'";
         $result = $this->db->update($query);
         if ($result) {
-            if ($status == 2 || $status == 3) { // Đã nhận hoặc Thành công
+            if ($status == 2 || $status == 3) {
                 $order_details = $this->get_order_details($order_id);
                 while ($detail = $order_details->fetch_assoc()) {
                     $product_id = $detail['product_id'];
@@ -118,7 +141,6 @@ class Order
         while ($detail = $order_details->fetch_assoc()) {
             $product_id = $detail['product_id'];
             $quantity = $detail['quantity'];
-            // Không hoàn tồn kho, chỉ ghi lịch sử
             $note = "Xóa đơn hàng $order_id (admin): $quantity sản phẩm";
             $this->db->insert("INSERT INTO inventory_history (product_id, quantity_change, note, created_at) 
                                VALUES ('$product_id', 0, '$note', NOW())");
@@ -139,7 +161,6 @@ class Order
             while ($detail = $order_details->fetch_assoc()) {
                 $product_id = $detail['product_id'];
                 $quantity = $detail['quantity'];
-                // Hoàn lại tồn kho khi khách hủy
                 $this->db->update("UPDATE inventory SET quantity = quantity + $quantity WHERE product_id = '$product_id'");
                 $note = "Khách hủy đơn hàng $order_id: hoàn $quantity sản phẩm";
                 $this->db->insert("INSERT INTO inventory_history (product_id, quantity_change, note, created_at) 
@@ -160,7 +181,6 @@ class Order
         return $result ? $result->fetch_assoc()['total'] : 0;
     }
 
-
     private function generate_order_code()
     {
         return 'ORD' . time();
@@ -172,13 +192,12 @@ class Order
         foreach ($products as $product) {
             $total += $product['price'] * $product['quantity'];
         }
-        return $total + ($total * 0.1); // Cộng VAT 10%
+        return $total + ($total * 0.1);
     }
-
 
     public function get_total_revenue()
     {
-        $query = "SELECT SUM(total) as revenue FROM `order` WHERE status = 3"; // Chỉ tính status = 3 (Thành công)
+        $query = "SELECT SUM(total) as revenue FROM `order` WHERE status = 3";
         $result = $this->db->select($query);
         return $result ? $result->fetch_assoc()['revenue'] : 0;
     }

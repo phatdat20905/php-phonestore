@@ -8,3 +8,4 @@ class MoMoConfig
     public static $returnUrl = 'http://localhost/phonestore/momo_return.php'; // URL trả về
     public static $notifyUrl = 'http://localhost/phonestore/momo_return.php'; // URL thông báo
 }
+?>

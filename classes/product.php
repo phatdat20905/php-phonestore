@@ -44,6 +44,30 @@ class Product
         return $this->db->select($query);
     }
 
+    public function filter_products($cat_id, $brand_id, $keyword)
+    {
+        $cat_id = $this->db->link->real_escape_string($cat_id);
+        $brand_id = $this->db->link->real_escape_string($brand_id);
+        $keyword = $this->db->link->real_escape_string($keyword);
+
+        $query = "SELECT p.*, c.cat_name, b.brand_name 
+                  FROM product p 
+                  JOIN category c ON p.cat_id = c.cat_id 
+                  JOIN brand b ON p.brand_id = b.brand_id 
+                  WHERE 1=1";
+        if ($cat_id) {
+            $query .= " AND p.cat_id = '$cat_id'";
+        }
+        if ($brand_id) {
+            $query .= " AND p.brand_id = '$brand_id'";
+        }
+        if ($keyword) {
+            $query .= " AND (p.product_name LIKE '%$keyword%' OR p.product_desc LIKE '%$keyword%')";
+        }
+        $query .= " ORDER BY p.product_id DESC";
+        return $this->db->select($query);
+    }
+
     public function get_product_by_id($id)
     {
         $query = "SELECT * FROM product WHERE product_id = '$id'";
@@ -76,7 +100,7 @@ class Product
 
     private function upload_image($file)
     {
-        $target_dir = "uploads/";
+        $target_dir = "Uploads/";
         $file_name = time() . "_" . basename($file["name"]);
         $target_file = $target_dir . $file_name;
         move_uploaded_file($file["tmp_name"], $target_file);
@@ -147,8 +171,6 @@ class Product
         return $this->db->select($query);
     }
 
-
-    // Sửa hàm get_product_by_cat để hỗ trợ phân trang
     public function get_product_by_cat($cat_id, $limit = null, $offset = null)
     {
         $cat_id = $this->db->link->real_escape_string($this->fm->validation($cat_id));
@@ -159,7 +181,6 @@ class Product
         return $this->db->select($query);
     }
 
-    // Thêm hàm đếm tổng số sản phẩm theo danh mục
     public function count_products_by_cat($cat_id)
     {
         $cat_id = $this->db->link->real_escape_string($this->fm->validation($cat_id));
@@ -168,7 +189,6 @@ class Product
         return $result ? $result->fetch_assoc()['total'] : 0;
     }
 
-    // Sửa hàm get_product_by_brand để hỗ trợ phân trang
     public function get_product_by_brand($brand_id, $limit = null, $offset = null)
     {
         $brand_id = $this->db->link->real_escape_string($this->fm->validation($brand_id));
@@ -179,7 +199,6 @@ class Product
         return $this->db->select($query);
     }
 
-    // Thêm hàm đếm tổng số sản phẩm theo thương hiệu
     public function count_products_by_brand($brand_id)
     {
         $brand_id = $this->db->link->real_escape_string($this->fm->validation($brand_id));
@@ -188,8 +207,6 @@ class Product
         return $result ? $result->fetch_assoc()['total'] : 0;
     }
 
-
-    // Hàm tìm kiếm sản phẩm
     public function search_product($keyword, $limit, $offset)
     {
         $keyword = $this->db->link->real_escape_string($keyword);
@@ -200,7 +217,6 @@ class Product
         return $this->db->select($query);
     }
 
-    // Hàm đếm tổng số sản phẩm tìm được
     public function count_search_products($keyword)
     {
         $keyword = $this->db->link->real_escape_string($keyword);

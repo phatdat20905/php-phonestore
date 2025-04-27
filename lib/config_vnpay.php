@@ -17,3 +17,4 @@ class VNPAYConfig
         return date('YmdHis', strtotime('+15 minutes', strtotime($startTime)));
     }
 }
+?>
